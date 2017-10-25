@@ -34,7 +34,7 @@
   if ((a) != (b)) { \
     std::cerr << "Test Failed: " << #a << ":'" << (a) << "' != " << #b << ":'" \
         << (b) << "' at " << __LINE__ << std::endl; \
-    throw UnitTest::TestFailed("Equal Failed"); \
+    throw solidutils::TestFailed("Equal Failed"); \
   }
 
 
@@ -42,7 +42,7 @@
   if ((a).compare(b) != 0) { \
     std::cerr << "Test Failed: " << #a << ":'" << (a) << "' != " << #b << ":'" \
         << (b) << "' at " << __LINE__ << std::endl; \
-    throw UnitTest::TestFailed("Equal Failed"); \
+    throw solidutils::TestFailed("Equal Failed"); \
   }
 
 
@@ -50,7 +50,7 @@
   if (!(a)) { \
     std::cerr << "Test Failed: '" << #a << "' is false at: " << __LINE__ \
       << std::endl; \
-    throw UnitTest::TestFailed("True Failed"); \
+    throw solidutils::TestFailed("True Failed"); \
   }
 
 
@@ -58,7 +58,7 @@
   if (a) { \
     std::cerr << "Test Failed: '" << #a << "' is true at: " << __LINE__ \
       << std::endl; \
-    throw UnitTest::TestFailed("False Failed"); \
+    throw solidutils::TestFailed("False Failed"); \
   }
 
 
@@ -66,21 +66,21 @@
   if ((a) <= (b)) { \
     std::cerr << "Test Failed:" << #a << ":'" << (a) << "' <= " << #b << ":'" \
         << (b) << "' at " << __LINE__ << std::endl; \
-    throw UnitTest::TestFailed("Greater Than Failed"); \
+    throw solidutils::TestFailed("Greater Than Failed"); \
   }
 
 #define testLess(a,b) \
   if ((a) >= (b)) { \
     std::cerr << "Test Failed:" << #a << ":'" << (a) << "' >= " << #b << ":'" \
         << (b) << "' at " << __LINE__ << std::endl; \
-    throw UnitTest::TestFailed("Less Than Failed"); \
+    throw solidutils::TestFailed("Less Than Failed"); \
   }
 
 #define testGreaterOrEqual(a,b) \
   if ((a) < (b)) { \
     std::cerr << "Test Failed:" << #a << ":'" << (a) << "' < " << #b << ":'" \
         << (b) << "' at " << __LINE__ << std::endl; \
-    throw UnitTest::TestFailed("Greater Than Or Equal Failed"); \
+    throw solidutils::TestFailed("Greater Than Or Equal Failed"); \
   }
 
 
@@ -88,14 +88,14 @@
   if ((a) > (b)) { \
     std::cerr << "Test Failed:" << #a << ":'" << (a) << "' > " << #b << ":'" \
         << (b) << "' at " << __LINE__ << std::endl; \
-    throw UnitTest::TestFailed("Greater Than Or Equal Failed"); \
+    throw solidutils::TestFailed("Greater Than Or Equal Failed"); \
   }
 
 
 #define UNITTEST(CLASS, TEST) \
   void _unittest_ ## CLASS ## _ ## TEST ## _func(void); \
   bool _unittest_ ## CLASS ## _ ## TEST ## _result = \
-      UnitTest::UnitTest( \
+      solidutils::UnitTest( \
           __FILE__":"#CLASS"->"#TEST, \
           _unittest_ ## CLASS ## _ ## TEST ## _func); \
   void _unittest_ ## CLASS ## _ ## TEST ## _func(void) \
@@ -108,8 +108,8 @@
 namespace solidutils 
 {
 
-volatile int numberFailed = 0;
-volatile int numberPassed = 0;
+volatile int _unittest_numberFailed = 0;
+volatile int _unittest_numberPassed = 0;
 
 
 namespace
@@ -132,11 +132,11 @@ bool UnitTest(
   try {
     test();
     std::cerr << "Test " << name << " PASSED." << std::endl;
-    ++numberPassed;
+    ++_unittest_numberPassed;
     return true;
   } catch (TestFailed const & e) {
     std::cerr << "Test " << name << " FAILED." << std::endl;
-    ++numberFailed;
+    ++_unittest_numberFailed;
     return false;
   }
 }
@@ -165,15 +165,18 @@ int main(
 
 
 
-  if (UnitTest::numberPassed == 0 && UnitTest::numberFailed == 0) {
+  if (solidutils::_unittest_numberPassed == 0 && \
+      solidutils::_unittest_numberFailed == 0) {
     std::cerr << "No tests run." << std::endl;
     return 3;
   }
 
-  std::cout << UnitTest::numberPassed << " tests passed." << std::endl;
-  std::cout << UnitTest::numberFailed << " tests failed." << std::endl;
+  std::cout << solidutils::_unittest_numberPassed << " tests passed." << \
+      std::endl;
+  std::cout << solidutils::_unittest_numberFailed << " tests failed." << \
+      std::endl;
   
-  if (UnitTest::numberFailed == 0) {
+  if (solidutils::_unittest_numberFailed == 0) {
     return 0;
   } else {
     return 1;
