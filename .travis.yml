@@ -4,4 +4,4 @@ compiler:
   - clang
   - gcc
 script:
-  - "./configure --test && make && make test"
+  - "./configure && make && make test"
