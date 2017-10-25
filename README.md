@@ -1,6 +1,10 @@
 SolidUtils
 ----------
 
+<a href="https://travis-ci.org/solidlake/solidutils">
+<img src="https://travis-ci.org/solidlake/solidutils.svg?branch=master"/>
+</a>
+
 C++ utility classes.
 
 
@@ -8,6 +12,17 @@ Usage
 -----
 
 This repository is meant to be used as a submodule in other projects.
+
+```bash
+git submodule add https://github.com/solidlake/solidutils
+```
+
+And then from within a source file (assuming where you added `solidutils` is in
+your include path):
+
+```c++
+#include "solidutils/FixedSet.hpp"
+```
 
 
 What's in here?
