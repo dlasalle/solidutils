@@ -21,6 +21,11 @@ namespace sl
 {
 
 
+/**
+* @brief The BitArray class provides a boolean vector. This will generally be
+* identical to std::vector<bool>, but may differ in order to provide better
+* performance in operations like clear().
+*/
 class BitArray
 {
   public:

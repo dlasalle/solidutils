@@ -19,6 +19,14 @@ namespace sl
 {
 
 
+/**
+* @brief The FixedPriorityQueue class provides a priority queue implementation
+* with the standard O(log n) insertion, deletion, pop, and update operations,
+* but in addition can perform non-modifying queries in O(1) time.
+*
+* @tparam K The key type.
+* @tparam V The value type.
+*/
 template<typename K, typename V>
 class FixedPriorityQueue
 {
