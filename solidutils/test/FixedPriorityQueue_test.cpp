@@ -13,7 +13,7 @@
 #include "FixedPriorityQueue.hpp"
 
 
-namespace solidutils
+namespace sl
 {
 
 

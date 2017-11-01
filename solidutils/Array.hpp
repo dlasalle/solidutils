@@ -18,7 +18,7 @@
 #include "Debug.hpp"
 
 
-namespace solidutils
+namespace sl
 {
 
 template<typename T>

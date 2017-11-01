@@ -19,7 +19,7 @@
 #include "Debug.hpp"
 
 
-namespace solidutils
+namespace sl
 {
 
 class Random
