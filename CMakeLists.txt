@@ -40,8 +40,9 @@ else()
 	set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} -std=c++11") 
 endif()
 
-enable_testing()
+if (DEFINED TESTS AND NOT TESTS EQUAL 0)
+  enable_testing()
+endif()
 
-include_directories("include")
-add_subdirectory("test")
+add_subdirectory("solidutils")
 

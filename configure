@@ -40,8 +40,8 @@ show_help() {
 # OPTION PARSING ##############################################################
 ###############################################################################
 
-
-CONFIG_FLAGS="-DCMAKE_VERBOSE_MAKEFILE=1"
+# since it is all header files, always build tests.
+CONFIG_FLAGS="-DCMAKE_VERBOSE_MAKEFILE=1 -DTESTS=1"
 
 
 # default values
