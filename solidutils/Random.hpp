@@ -8,9 +8,6 @@
 */
 
 
-
-
-
 #ifndef SOLIDUTILS_INCLUDE_RANDOM_HPP
 #define SOLIDUTILS_INCLUDE_RANDOM_HPP
 
@@ -22,6 +19,15 @@
 namespace sl
 {
 
+/**
+* @brief The Random class provides wrappers around base 'random' functionality,
+* such as getting a number within a given range, shuffling elements, or filling
+* an array with large amounts of random data. The functions contained here in
+* make no effort to provide random numbers with any particular distribution,
+* but rather focus on generating random numbers as fast as possible. Any
+* application which needs high quality random numbers should not use this
+* class.
+*/
 class Random
 {
   public:

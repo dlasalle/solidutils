@@ -50,6 +50,10 @@ class NotEnoughMemoryException :
 };
 
 
+/**
+* @brief The Alloc class provides a set of static functions for allocating
+* templated memory via malloc() and associated functions.
+*/
 class Alloc
 {
   public:

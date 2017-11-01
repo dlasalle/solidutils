@@ -8,7 +8,6 @@
 */
 
 
-#include <vector>
 #include <cstdlib>
 #include "UnitTest.hpp"
 #include "Array.hpp"

@@ -20,6 +20,14 @@ namespace sl
 {
 
 
+/**
+* @brief The FixedSet class provides a set implementation which allows for
+* insertion, querying, and deletion in constant time. While std::unordered_set
+* may give constant time complexity of these operations through a hash table,
+* this does so through fixed size dense vector (no hashing).
+*
+* @tparam T The type of element to store.
+*/
 template <typename T>
 class FixedSet
 {
