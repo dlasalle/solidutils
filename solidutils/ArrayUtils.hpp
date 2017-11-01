@@ -16,7 +16,7 @@
 #include "Array.hpp"
 
 
-namespace solidutils
+namespace sl
 {
 
 

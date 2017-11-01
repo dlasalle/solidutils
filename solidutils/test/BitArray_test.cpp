@@ -12,7 +12,7 @@
 #include "BitArray.hpp"
 
 
-namespace solidutils
+namespace sl
 {
 
 UNITTEST(BitArray, Size)

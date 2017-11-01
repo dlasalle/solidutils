@@ -13,7 +13,7 @@
 #include "FixedSet.hpp"
 
 
-namespace solidutils
+namespace sl
 {
 
 UNITTEST(FixedSet, SizeAddRemove)

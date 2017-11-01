@@ -19,7 +19,7 @@
 #include <string>
 
 
-namespace solidutils
+namespace sl
 {
 
 
