@@ -5,6 +5,10 @@ SolidUtils
 <img src="https://travis-ci.org/solidlake/solidutils.svg?branch=master"/>
 </a>
 
+<a href='http://solidutils.readthedocs.io/en/latest/?badge=latest'>
+<img src='https://readthedocs.org/projects/solidutils/badge/?version=latest' alt='Documentation Status' />
+</a>
+
 C++ utility classes.
 
 
