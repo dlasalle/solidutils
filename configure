@@ -65,6 +65,10 @@ for i in "${@}"; do
     --devel)
     CONFIG_FLAGS="${CONFIG_FLAGS} -DDEVEL=1"
     ;;
+    # ignore a --test flag as we always place it as on
+    --test)
+    echo "Ignoring '--test' as testing is always on."
+    ;;
     # cc
     --cc=*)
     CONFIG_FLAGS="${CONFIG_FLAGS} -DCMAKE_C_COMPILER=${i#*=}"

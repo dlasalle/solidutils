@@ -224,7 +224,7 @@ class Array
     *
     * @return The iterator/pointer.
     */
-    T * begin() const noexcept
+    T const * begin() const noexcept
     {
       return m_data;
     }
@@ -235,7 +235,29 @@ class Array
     *
     * @return The iterator/pointer.
     */
-    T * end() const noexcept
+    T const * end() const noexcept
+    {
+      return m_data + m_size;
+    }
+
+
+    /**
+    * @brief Get the beginning iterator (mutable).
+    *
+    * @return The iterator/pointer.
+    */
+    T * begin() noexcept
+    {
+      return m_data;
+    }
+
+
+    /**
+    * @brief Get the end iterator (mutable).
+    *
+    * @return The iterator/pointer.
+    */
+    T * end() noexcept
     {
       return m_data + m_size;
     }
@@ -253,6 +275,7 @@ class Array
 
 
 };
+
 
 }
 
