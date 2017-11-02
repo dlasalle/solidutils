@@ -15,14 +15,10 @@
 #define SOLIDUTILS_INCLUDE_UNITTEST_HPP
 
 
-
-
 #include <stdexcept>
 #include <exception>
 #include <string>
 #include <iostream>
-
-
 
 
 /******************************************************************************
@@ -35,6 +31,14 @@
     std::cerr << "Test Failed: " << #a << ":'" << (a) << "' != " << #b << ":'" \
         << (b) << "' at " << __LINE__ << std::endl; \
     throw sl::TestFailed("Equal Failed"); \
+  }
+
+
+#define testNotEqual(a,b) \
+  if ((a) == (b)) { \
+    std::cerr << "Test Failed: " << #a << ":'" << (a) << "' == " << #b << ":'" \
+        << (b) << "' at " << __LINE__ << std::endl; \
+    throw sl::TestFailed("Not equal Failed"); \
   }
 
 
@@ -114,6 +118,7 @@ volatile int _unittest_numberPassed = 0;
 
 namespace
 {
+
 
 class TestFailed : public std::logic_error
 {

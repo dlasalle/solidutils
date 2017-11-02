@@ -141,6 +141,52 @@ class FixedSet
     }
 
 
+    /**
+    * @brief Get the beginning iterator.
+    *
+    * @return The iterator/pointer.
+    */
+    T const * begin() const noexcept
+    {
+      return m_data.begin();
+    }
+
+
+    /**
+    * @brief Get the end iterator.
+    *
+    * @return The iterator/pointer.
+    */
+    T const * end() const noexcept
+    {
+      // we want to return the set's size, and not the array's.
+      return m_data.begin() + m_size;
+    }
+
+
+    /**
+    * @brief Get the beginning iterator (mutable).
+    *
+    * @return The iterator/pointer.
+    */
+    T * begin() noexcept
+    {
+      return m_data.begin();
+    }
+
+
+    /**
+    * @brief Get the end iterator (mutable).
+    *
+    * @return The iterator/pointer.
+    */
+    T * end() noexcept
+    {
+      // we want to return the set's size, and not the array's.
+      return m_data.begin() + m_size;
+    }
+
+
   private: 
     size_t m_size;
     Array<T> m_data;

@@ -8,9 +8,10 @@
 */
 
 
-
 #include "UnitTest.hpp"
 #include "FixedSet.hpp"
+#include <vector>
+#include <algorithm>
 
 
 namespace sl
@@ -73,6 +74,20 @@ UNITTEST(FixedSet, HasAddRemove)
   testFalse(set.has(0));
   testFalse(set.has(2));
   testFalse(set.has(3));
+}
+
+UNITTEST(FixedSet, Iterator)
+{
+  std::vector<int> base{1, 5, 3, 6};
+  FixedSet<int> set(10);
+
+  for (int const & v : base) {
+    set.add(v);
+  }
+
+  for (int const v : set) {
+    testTrue(std::find(base.begin(), base.end(), v) != base.end());
+  }
 }
 
 
