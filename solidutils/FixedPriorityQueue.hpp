@@ -105,7 +105,7 @@ class FixedPriorityQueue
       ASSERT_LESS(static_cast<size_t>(value), m_index.size());
       ASSERT_NOTEQUAL(m_index[value], NULL_INDEX);
 
-      size_t const index = m_index[value]; 
+      size_t const index = m_index[value];
       m_data[index].key = key;
 
       // update position
@@ -178,6 +178,18 @@ class FixedPriorityQueue
     }
 
 
+    /**
+    * @brief Clear entries from the priority queue.
+    */
+    void clear() noexcept
+    {
+      for (size_t i = 0; i < m_size; ++i) {
+        m_index[m_data[i].value] = NULL_INDEX;
+      }
+      m_size = 0;
+    }
+
+
   private:
     struct kv_pair_struct
     {
@@ -195,9 +207,9 @@ class FixedPriorityQueue
     /**
     * @brief Get the index of the parent.
     *
-    * @param index
+    * @param index The index of the current element.
     *
-    * @return 
+    * @return The index of the parent element.
     */
     size_t parentIndex(
         size_t const index) const noexcept
@@ -270,7 +282,7 @@ class FixedPriorityQueue
       V const value = m_data[index].value;
       m_index[value] = index;
 
-      siftDown(index); 
+      siftDown(index);
     }
 
 
