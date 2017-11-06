@@ -11,16 +11,18 @@
 #ifndef SOLIDUTILS_INCLUDE_DEBUG_HPP
 #define SOLIDUTILS_INCLUDE_DEBUG_HPP
 
-#include <cassert>
-#include <iostream>
-
-
 /******************************************************************************
 * MACROS **********************************************************************
 ******************************************************************************/
 
-
 #ifndef NDEBUG
+#include <cassert>  // assert
+#include <cstdio>   // vprintf
+#include <cstdarg>  // va_start, va_end
+#include <iostream> // std::cerr, std::cout
+
+namespace sl
+{
   #define ASSERT_TRUE(a) \
     do { \
       if (!(a)) { \
@@ -100,7 +102,27 @@
       } \
     } while (false)
 
+namespace
+{
+
+void debugMessage(
+    char const * const fmt,
+    ...)
+{
+    va_list argptr;
+    va_start(argptr, fmt);
+    fprintf(stdout, "DEBUG: ");
+    vfprintf(stdout, fmt, argptr);
+    va_end(argptr);
+    fflush(stdout);
+}
+
+}
+
+}
 #else
+namespace sl
+{
   #define ASSERT_TRUE(a)
   #define ASSERT_FALSE(a)
   #define ASSERT_EQUAL(a,b)
@@ -111,6 +133,20 @@
   #define ASSERT_LESSEQUAL(a,b)
   #define ASSERT_GREATER(a,b)
   #define ASSERT_GREATEREQUAL(a,b)
+namespace
+{
+
+void debugMessage(
+    char const *,
+    ...)
+{
+  // do nothing
+}
+
+}
+
+}
 #endif
 
 #endif
+
