@@ -105,6 +105,9 @@ namespace sl
 namespace
 {
 
+// NOTE: there is no stream based debugging, as expression in the '<<' would
+// still be evaluated even if not printed.
+
 /**
 * @brief Print a debugging message
 *
@@ -139,37 +142,20 @@ void debugMessage(
 
 }
 #else
-namespace sl
-{
-  #define ASSERT_TRUE(a)
-  #define ASSERT_FALSE(a)
-  #define ASSERT_EQUAL(a,b)
-  #define ASSERT_NOTEQUAL(a,b)
-  #define ASSERT_NULL(a)
-  #define ASSERT_NOTNULL(a)
-  #define ASSERT_LESS(a,b)
-  #define ASSERT_LESSEQUAL(a,b)
-  #define ASSERT_GREATER(a,b)
-  #define ASSERT_GREATEREQUAL(a,b)
-namespace
-{
+#define ASSERT_TRUE(a)
+#define ASSERT_FALSE(a)
+#define ASSERT_EQUAL(a,b)
+#define ASSERT_NOTEQUAL(a,b)
+#define ASSERT_NULL(a)
+#define ASSERT_NOTNULL(a)
+#define ASSERT_LESS(a,b)
+#define ASSERT_LESSEQUAL(a,b)
+#define ASSERT_GREATER(a,b)
+#define ASSERT_GREATEREQUAL(a,b)
 
-void debugMessage(
-    char const *,
-    ...)
-{
-  // do nothing
-}
+// macro instead of a function so that arguments are not evaluated
+#define debugMessage( ...)
 
-void debugMessage(
-    std::string const &)
-{
-  // do nothing
-}
-
-}
-
-}
 #endif
 
 #endif
