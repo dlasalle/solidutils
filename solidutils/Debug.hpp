@@ -105,6 +105,12 @@ namespace sl
 namespace
 {
 
+/**
+* @brief Print a debugging message
+*
+* @param fmt The format of the message (printf style).
+* @param ... The message arguments.
+*/
 void debugMessage(
     char const * const fmt,
     ...)
@@ -113,8 +119,20 @@ void debugMessage(
     va_start(argptr, fmt);
     fprintf(stdout, "DEBUG: ");
     vfprintf(stdout, fmt, argptr);
+    fprintf(stdout, "\n");
     va_end(argptr);
     fflush(stdout);
+}
+
+/**
+* @brief Print a debugging message.
+*
+* @param msg The message.
+*/
+void debugMessage(
+    std::string const & msg)
+{
+  fprintf(stdout, "DEBUG: %s\n", msg.c_str());
 }
 
 }
@@ -139,6 +157,12 @@ namespace
 void debugMessage(
     char const *,
     ...)
+{
+  // do nothing
+}
+
+void debugMessage(
+    std::string const &)
 {
   // do nothing
 }

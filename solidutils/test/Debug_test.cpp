@@ -39,9 +39,9 @@ UNITTEST(Debug, Asserts)
 
 UNITTEST(Debug, DebugMessage)
 {
-  debugMessage("start\n");
-  debugMessage("test: %d %d %d\n", 1, 2, 3);
-  debugMessage("end\n");
+  debugMessage("start");
+  debugMessage("test: %d %d %d", 1, 2, 3);
+  debugMessage(std::string("end"));
 }
 
 }
