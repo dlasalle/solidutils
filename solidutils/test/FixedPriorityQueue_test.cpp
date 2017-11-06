@@ -19,7 +19,7 @@ namespace sl
 
 UNITTEST(FixedPriortyQueue, AddPopInOrder)
 {
-  FixedPriorityQueue<float, int> pq(0, 10);
+  FixedPriorityQueue<float, int> pq(10);
 
   for (int i = 0; i < 10; ++i) {
     pq.add(1.0/(i+1), i);
@@ -34,7 +34,7 @@ UNITTEST(FixedPriortyQueue, AddPopInOrder)
 
 UNITTEST(FixedPriortyQueue, AddPeek)
 {
-  FixedPriorityQueue<float, int> pq(0, 10);
+  FixedPriorityQueue<float, int> pq(10);
 
   for (int i = 0; i < 10; ++i) {
     pq.add(1.0/(i+1), i);
@@ -46,7 +46,7 @@ UNITTEST(FixedPriortyQueue, AddPeek)
 
 UNITTEST(FixedPriortyQueue, AddMax)
 {
-  FixedPriorityQueue<float, int> pq(0, 10);
+  FixedPriorityQueue<float, int> pq(10);
 
   for (int i = 0; i < 10; ++i) {
     pq.add(1.0/(i+1), i);
@@ -56,9 +56,30 @@ UNITTEST(FixedPriortyQueue, AddMax)
 }
 
 
+UNITTEST(FixedPriortyQueue, AddContains)
+{
+  FixedPriorityQueue<float, int> pq(10);
+
+  for (int i = 0; i < 10; ++i) {
+    if (i % 3 == 0) {
+      pq.add(1.0/(i+1), i);
+    }
+  }
+
+  for (int i = 0; i < 10; ++i) {
+    if (i % 3 == 0) {
+      testTrue(pq.contains(i));
+    } else {
+      testFalse(pq.contains(i));
+    }
+  }
+
+}
+
+
 UNITTEST(FixedPriortyQueue, AddPopReverseOrder)
 {
-  FixedPriorityQueue<float, int> pq(0, 10);
+  FixedPriorityQueue<float, int> pq(10);
 
   for (int i = 0; i < 10; ++i) {
     pq.add(i/10.0, i);
@@ -72,16 +93,49 @@ UNITTEST(FixedPriortyQueue, AddPopReverseOrder)
 }
 
 
-UNITTEST(FixedPriortyQueue, Clear)
+UNITTEST(FixedPriortyQueue, AddRemoveContains)
 {
-  FixedPriorityQueue<float, int> pq(0, 10);
+  FixedPriorityQueue<float, int> pq(10);
 
   for (int i = 0; i < 10; ++i) {
     pq.add(1.0/(i+1), i);
   }
 
+  for (int i = 0; i < 10; ++i) {
+    if (i % 3 == 0) {
+      pq.remove(i);
+    }
+  }
+
+  for (int i = 0; i < 10; ++i) {
+    if (i % 3 == 0) {
+      testFalse(pq.contains(i));
+    } else {
+      testTrue(pq.contains(i));
+    }
+  }
+}
+
+
+UNITTEST(FixedPriortyQueue, Clear)
+{
+  FixedPriorityQueue<float, int> pq(10);
+
+  for (int i = 0; i < 10; ++i) {
+    pq.add(1.0/(i+1), i);
+  }
+
+  // remove a couple
+  pq.pop();
+  pq.pop();
+
   pq.clear();
   testEqual(0, pq.size());
+
+  // verify that it is empty
+  for (int i = 0; i < 10; ++i) {
+    testFalse(pq.contains(i));
+  }
 
   // test that we can re-use the priorty queue again
   for (int i = 0; i < 10; ++i) {
@@ -93,7 +147,6 @@ UNITTEST(FixedPriortyQueue, Clear)
     int const num = pq.pop();
     testEqual(num, i);
   }
-
 }
 
 

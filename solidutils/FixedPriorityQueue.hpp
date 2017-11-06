@@ -34,21 +34,17 @@ class FixedPriorityQueue
     static constexpr size_t const NULL_INDEX = static_cast<size_t>(-1);
 
     /**
-    * @brief Create a new priority with the given min and max.
+    * @brief Create a new priority queue that can hold element 0 through max.
     *
-    * @param min The min value in the priority queue.
-    * @param max The max value in the priority queue.
+    * @param max The max value in the priority queue (exclusive).
     */
     FixedPriorityQueue(
-        V const min,
         V const max) :
-      m_min(min),
-      m_max(max),
-      m_data(max-min),
-      m_index(max-min, NULL_INDEX),
+      m_data(max),
+      m_index(max, NULL_INDEX),
       m_size(0)
     {
-      ASSERT_LESS(min, max);
+      // do nothing
     }
 
 
@@ -65,7 +61,6 @@ class FixedPriorityQueue
 
       // remove item from heap and sort up
       size_t const index = m_index[value];
-      m_index[value] = NULL_INDEX;
       fill(index);
     }
 
@@ -113,6 +108,22 @@ class FixedPriorityQueue
 
 
     /**
+    * @brief Check if a value in present in the priority queue.
+    *
+    * @param value The value to check for.
+    *
+    * @return Whether or not the value is present.
+    */
+    bool contains(
+        V const value) const noexcept
+    {
+      ASSERT_LESS(static_cast<size_t>(value), m_index.size());
+
+      return m_index[value] != NULL_INDEX;
+    }
+
+
+    /**
     * @brief Get the key associated with the given value.
     *
     * @param value The value.
@@ -120,7 +131,7 @@ class FixedPriorityQueue
     * @return The key.
     */
     K get(
-        V const value) noexcept
+        V const value) const noexcept
     {
       ASSERT_LESS(static_cast<size_t>(value), m_index.size());
       ASSERT_NOTEQUAL(m_index[value], NULL_INDEX);
@@ -197,8 +208,6 @@ class FixedPriorityQueue
       V value;
     };
 
-    V const m_min;
-    V const m_max;
     Array<kv_pair_struct> m_data;
     Array<size_t> m_index;
     size_t m_size;
@@ -276,13 +285,16 @@ class FixedPriorityQueue
 
       --m_size;
 
-      // what we'll do is move the bottom node to this position
+      // what we'll do is move the bottom node to this position and delete it
+      V const deletedValue = m_data[index].value;
       m_data[index] = m_data[m_size];
 
       V const value = m_data[index].value;
       m_index[value] = index;
 
       siftDown(index);
+
+      m_index[deletedValue] = NULL_INDEX;
     }
 
 
