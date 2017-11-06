@@ -77,6 +77,44 @@ UNITTEST(FixedPriortyQueue, AddContains)
 }
 
 
+UNITTEST(FixedPriortyQueue, AddUpdate)
+{
+  FixedPriorityQueue<float, int> pq(10);
+
+  for (int i = 0; i < 10; ++i) {
+    pq.add(1.0/(i+1), i);
+  }
+
+  for (int i = 0; i < 10; ++i) {
+    if (i % 3 == 0) {
+      pq.update(i, i);
+    }
+  }
+
+  // verify top element
+  testEqual(pq.max(), 9);
+  testEqual(pq.peek(), 9);
+
+  float lastPriority = pq.max();
+  for (int i = 0; i < 10; ++i) {
+    float const newPriority = pq.max();
+    int const x = pq.pop();
+
+    // verify we're getting them in order
+    testLessOrEqual(newPriority, lastPriority);
+
+    // verify we have the right priority
+    if (x % 3 == 0) {
+      testEqual(newPriority, x);
+    } else {
+      testEqual(newPriority, static_cast<float>(1.0/(x+1)));
+    }
+
+    lastPriority = newPriority;
+  }
+}
+
+
 UNITTEST(FixedPriortyQueue, AddPopReverseOrder)
 {
   FixedPriorityQueue<float, int> pq(10);

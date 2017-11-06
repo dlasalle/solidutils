@@ -104,6 +104,11 @@ class FixedPriorityQueue
       m_data[index].key = key;
 
       // update position
+      if (index > 0 && key > m_data[parentIndex(index)].key) {
+        siftUp(index);
+      } else {
+        siftDown(index);
+      }
     }
 
 
@@ -147,7 +152,7 @@ class FixedPriorityQueue
     */
     V pop() noexcept
     {
-      ASSERT_GREATER(m_index.size(), 0);
+      ASSERT_GREATER(m_size, 0);
 
       V const value = m_data[0].value;
       fill(0);
@@ -284,15 +289,17 @@ class FixedPriorityQueue
       ASSERT_LESS(index, m_size);
 
       --m_size;
-
-      // what we'll do is move the bottom node to this position and delete it
       V const deletedValue = m_data[index].value;
-      m_data[index] = m_data[m_size];
 
-      V const value = m_data[index].value;
-      m_index[value] = index;
+      if (m_size > 0) {
+        // what we'll do is move the bottom node to this position
+        m_data[index] = m_data[m_size];
 
-      siftDown(index);
+        V const value = m_data[index].value;
+        m_index[value] = index;
+
+        siftDown(index);
+      }
 
       m_index[deletedValue] = NULL_INDEX;
     }
