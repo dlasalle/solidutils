@@ -13,9 +13,6 @@
 #include <memory>
 
 
-namespace sl
-{
-
 UNITTEST(Debug, Asserts)
 {
   std::unique_ptr<int> mem(new int[1]);
@@ -39,9 +36,7 @@ UNITTEST(Debug, Asserts)
 
 UNITTEST(Debug, DebugMessage)
 {
-  debugMessage("start");
-  debugMessage("test: %d %d %d", 1, 2, 3);
-  debugMessage(std::string("end"));
-}
-
+  DEBUG_MESSAGE("start");
+  DEBUG_MESSAGE("test: %d %d %d", 1, 2, 3);
+  DEBUG_MESSAGE(std::string("end"));
 }

@@ -23,84 +23,6 @@
 
 namespace sl
 {
-  #define ASSERT_TRUE(a) \
-    do { \
-      if (!(a)) { \
-        std::cerr << "("#a" = " << (a) << ")" << std::endl; \
-        assert(false); \
-      } \
-    } while (false)
-  #define ASSERT_FALSE(a) \
-    do { \
-      if (a) { \
-        std::cerr << "("#a" = " << (a) << ")" << std::endl; \
-        assert(false); \
-      } \
-    } while (false)
-  #define ASSERT_EQUAL(a,b) \
-    do { \
-      if (a != b) { \
-        std::cerr << "("#a" = " << (a) << ") != ("#b" = " << (b) << ")" << \
-            std::endl; \
-        assert(false); \
-      } \
-    } while (false)
-  #define ASSERT_NOTEQUAL(a,b) \
-    do { \
-      if (a == b) { \
-        std::cerr << "("#a" = " << (a) << ") == ("#b" = " << (b) << ")" << \
-            std::endl; \
-        assert(false); \
-      } \
-    } while (false)
-  #define ASSERT_NULL(a) \
-    do { \
-      if (a != nullptr) { \
-        std::cerr << "("#a" = " << (a) << ") != nullptr" << \
-            std::endl; \
-        assert(false); \
-      } \
-    } while (false)
-  #define ASSERT_NOTNULL(a) \
-    do { \
-      if (a == nullptr) { \
-        std::cerr << #a" is  null" << \
-            std::endl; \
-        assert(false); \
-      } \
-    } while (false)
-  #define ASSERT_LESS(a,b) \
-    do { \
-      if (a >= b) { \
-        std::cerr << "("#a" = " << (a) << ") !< ("#b" = " << (b) << ")" << \
-            std::endl; \
-        assert(false); \
-      } \
-    } while (false)
-  #define ASSERT_LESSEQUAL(a,b) \
-    do { \
-      if (a > b) { \
-        std::cerr << "("#a" = " << (a) << ") !<= ("#b" = " << (b) << ")" << \
-            std::endl; \
-        assert(false); \
-      } \
-    } while (false)
-  #define ASSERT_GREATER(a,b) \
-    do { \
-      if (a <= b) { \
-        std::cerr << "("#a" = " << (a) << ") !> ("#b" = " << (b) << ")" << \
-            std::endl; \
-        assert(false); \
-      } \
-    } while (false)
-  #define ASSERT_GREATEREQUAL(a,b) \
-    do { \
-      if (a < b) { \
-        std::cerr << "("#a" = " << (a) << ") !>= ("#b" = " << (b) << ")" << \
-            std::endl; \
-        assert(false); \
-      } \
-    } while (false)
 
 namespace
 {
@@ -141,6 +63,88 @@ void debugMessage(
 }
 
 }
+
+#define ASSERT_TRUE(a) \
+  do { \
+    if (!(a)) { \
+      std::cerr << "("#a" = " << (a) << ")" << std::endl; \
+      assert(false); \
+    } \
+  } while (false)
+#define ASSERT_FALSE(a) \
+  do { \
+    if (a) { \
+      std::cerr << "("#a" = " << (a) << ")" << std::endl; \
+      assert(false); \
+    } \
+  } while (false)
+#define ASSERT_EQUAL(a,b) \
+  do { \
+    if (a != b) { \
+      std::cerr << "("#a" = " << (a) << ") != ("#b" = " << (b) << ")" << \
+          std::endl; \
+      assert(false); \
+    } \
+  } while (false)
+#define ASSERT_NOTEQUAL(a,b) \
+  do { \
+    if (a == b) { \
+      std::cerr << "("#a" = " << (a) << ") == ("#b" = " << (b) << ")" << \
+          std::endl; \
+      assert(false); \
+    } \
+  } while (false)
+#define ASSERT_NULL(a) \
+  do { \
+    if (a != nullptr) { \
+      std::cerr << "("#a" = " << (a) << ") != nullptr" << \
+          std::endl; \
+      assert(false); \
+    } \
+  } while (false)
+#define ASSERT_NOTNULL(a) \
+  do { \
+    if (a == nullptr) { \
+      std::cerr << #a" is  null" << \
+          std::endl; \
+      assert(false); \
+    } \
+  } while (false)
+#define ASSERT_LESS(a,b) \
+  do { \
+    if (a >= b) { \
+      std::cerr << "("#a" = " << (a) << ") !< ("#b" = " << (b) << ")" << \
+          std::endl; \
+      assert(false); \
+    } \
+  } while (false)
+#define ASSERT_LESSEQUAL(a,b) \
+  do { \
+    if (a > b) { \
+      std::cerr << "("#a" = " << (a) << ") !<= ("#b" = " << (b) << ")" << \
+          std::endl; \
+      assert(false); \
+    } \
+  } while (false)
+#define ASSERT_GREATER(a,b) \
+  do { \
+    if (a <= b) { \
+      std::cerr << "("#a" = " << (a) << ") !> ("#b" = " << (b) << ")" << \
+          std::endl; \
+      assert(false); \
+    } \
+  } while (false)
+#define ASSERT_GREATEREQUAL(a,b) \
+  do { \
+    if (a < b) { \
+      std::cerr << "("#a" = " << (a) << ") !>= ("#b" = " << (b) << ")" << \
+          std::endl; \
+      assert(false); \
+    } \
+  } while (false)
+#define DEBUG_MESSAGE( ...) \
+    sl::debugMessage( __VA_ARGS__ )
+
 #else
 #define ASSERT_TRUE(a)
 #define ASSERT_FALSE(a)
@@ -152,9 +156,7 @@ void debugMessage(
 #define ASSERT_LESSEQUAL(a,b)
 #define ASSERT_GREATER(a,b)
 #define ASSERT_GREATEREQUAL(a,b)
-
-// macro instead of a function so that arguments are not evaluated
-#define debugMessage( ...)
+#define DEBUG_MESSAGE( ...)
 
 #endif
 
