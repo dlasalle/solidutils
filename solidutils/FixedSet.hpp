@@ -103,7 +103,7 @@ class FixedSet
       T const swap = m_data[m_size];
       size_t const place = m_index[index];       
       m_data[place] = swap;
-      m_index[swap] = index;
+      m_index[swap] = place;
       m_index[index] = NULL_INDEX;
     }
 
