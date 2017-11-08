@@ -21,20 +21,20 @@ UNITTEST(FixedSet, SizeAddRemove)
 {
   FixedSet<int> set(10);
 
-  testEqual(set.size(), 0);
+  testEqual(set.size(), 0u);
 
   set.add(2);
   set.add(6);
 
-  testEqual(set.size(), 2);
+  testEqual(set.size(), 2u);
 
   set.remove(6);
 
-  testEqual(set.size(), 1);
+  testEqual(set.size(), 1u);
 
   set.remove(2);
 
-  testEqual(set.size(), 0);
+  testEqual(set.size(), 0u);
 }
 
 UNITTEST(FixedSet, HasAddRemove)

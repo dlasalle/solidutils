@@ -19,7 +19,7 @@ UNITTEST(BitArray, Size)
 {
   BitArray ba(100);
 
-  testEqual(ba.size(), 100);
+  testEqual(ba.size(), 100u);
 }
 
 

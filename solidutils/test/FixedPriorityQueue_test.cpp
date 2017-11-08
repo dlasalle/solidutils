@@ -168,7 +168,7 @@ UNITTEST(FixedPriortyQueue, Clear)
   pq.pop();
 
   pq.clear();
-  testEqual(0, pq.size());
+  testEqual(0u, pq.size());
 
   // verify that it is empty
   for (int i = 0; i < 10; ++i) {
