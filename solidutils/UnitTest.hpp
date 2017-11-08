@@ -19,98 +19,16 @@
 #include <exception>
 #include <string>
 #include <iostream>
-
-
-/******************************************************************************
-* MACROS **********************************************************************
-******************************************************************************/
-
-
-#define testEqual(a,b) \
-  if ((a) != (b)) { \
-    std::cerr << "Test Failed: " << #a << ":'" << (a) << "' != " << #b << ":'" \
-        << (b) << "' at " << __LINE__ << std::endl; \
-    throw sl::TestFailed("Equal Failed"); \
-  }
-
-
-#define testNotEqual(a,b) \
-  if ((a) == (b)) { \
-    std::cerr << "Test Failed: " << #a << ":'" << (a) << "' == " << #b << ":'" \
-        << (b) << "' at " << __LINE__ << std::endl; \
-    throw sl::TestFailed("Not equal Failed"); \
-  }
-
-
-#define testStringEqual(a,b) \
-  if ((a).compare(b) != 0) { \
-    std::cerr << "Test Failed: " << #a << ":'" << (a) << "' != " << #b << ":'" \
-        << (b) << "' at " << __LINE__ << std::endl; \
-    throw sl::TestFailed("Equal Failed"); \
-  }
-
-
-#define testTrue(a) \
-  if (!(a)) { \
-    std::cerr << "Test Failed: '" << #a << "' is false at: " << __LINE__ \
-      << std::endl; \
-    throw sl::TestFailed("True Failed"); \
-  }
-
-
-#define testFalse(a) \
-  if (a) { \
-    std::cerr << "Test Failed: '" << #a << "' is true at: " << __LINE__ \
-      << std::endl; \
-    throw sl::TestFailed("False Failed"); \
-  }
-
-
-#define testGreater(a,b) \
-  if ((a) <= (b)) { \
-    std::cerr << "Test Failed:" << #a << ":'" << (a) << "' <= " << #b << ":'" \
-        << (b) << "' at " << __LINE__ << std::endl; \
-    throw sl::TestFailed("Greater Than Failed"); \
-  }
-
-#define testLess(a,b) \
-  if ((a) >= (b)) { \
-    std::cerr << "Test Failed:" << #a << ":'" << (a) << "' >= " << #b << ":'" \
-        << (b) << "' at " << __LINE__ << std::endl; \
-    throw sl::TestFailed("Less Than Failed"); \
-  }
-
-#define testGreaterOrEqual(a,b) \
-  if ((a) < (b)) { \
-    std::cerr << "Test Failed:" << #a << ":'" << (a) << "' < " << #b << ":'" \
-        << (b) << "' at " << __LINE__ << std::endl; \
-    throw sl::TestFailed("Greater Than Or Equal Failed"); \
-  }
-
-
-#define testLessOrEqual(a,b) \
-  if ((a) > (b)) { \
-    std::cerr << "Test Failed:" << #a << ":'" << (a) << "' > " << #b << ":'" \
-        << (b) << "' at " << __LINE__ << std::endl; \
-    throw sl::TestFailed("Greater Than Or Equal Failed"); \
-  }
-
-
-#define UNITTEST(CLASS, TEST) \
-  void _unittest_ ## CLASS ## _ ## TEST ## _func(void); \
-  bool _unittest_ ## CLASS ## _ ## TEST ## _result = \
-      sl::UnitTest( \
-          __FILE__":"#CLASS"->"#TEST, \
-          _unittest_ ## CLASS ## _ ## TEST ## _func); \
-  void _unittest_ ## CLASS ## _ ## TEST ## _func(void) \
+#include <sstream>
 
 
 /******************************************************************************
 * CLASSES AND TYPES ***********************************************************
 ******************************************************************************/
 
-namespace sl 
+namespace sl
 {
+
 
 volatile int _unittest_numberFailed = 0;
 volatile int _unittest_numberPassed = 0;
@@ -126,7 +44,141 @@ class TestFailed : public std::logic_error
     TestFailed(std::string const & str) :
         std::logic_error(str)
     {
+      // do nothing
     }
+};
+
+
+class TestStream
+{
+  public:
+    TestStream() :
+      m_stream(),
+      m_fail(false)
+    {
+      // do nothing
+    }
+
+
+    ~TestStream() noexcept(false)
+    {
+      if (m_fail) {
+        // write new line
+        std::cerr << std::endl;
+        // throw our error
+        throw TestFailed("Unit test failed.");
+      }
+    }
+
+
+    std::ostream & test()
+    {
+      if (m_fail) {
+        return std::cerr << "Test Failed: ";
+      } else {
+        return m_stream;
+      }
+    }
+
+
+    std::ostream & testEqual(
+        std::string const & a,
+        std::string const & b)
+    {
+      m_fail = !(a.compare(b) == 0);
+
+      return test();
+    }
+
+
+    template<typename A, typename B>
+    std::ostream & testEqual(
+        A const & a,
+        B const & b)
+    {
+      m_fail = !(a == b);
+
+      return test();
+    }
+
+
+    template<typename A, typename B>
+    std::ostream & testNotEqual(
+        A const & a,
+        B const & b)
+    {
+      m_fail = (a == b);
+
+      return test();
+    }
+
+
+    std::ostream & testTrue(
+        bool const pass)
+    {
+      m_fail = !pass;
+
+      return test();
+    }
+
+
+    std::ostream & testFalse(
+        bool const fail)
+    {
+      m_fail = fail;
+
+      return test();
+    }
+
+
+    template<typename A, typename B>
+    std::ostream & testGreater(
+        A const & a,
+        B const & b)
+    {
+      m_fail = !(a > b);
+
+      return test();
+    }
+
+
+    template<typename A, typename B>
+    std::ostream & testGreaterOrEqual(
+        A const & a,
+        B const & b)
+    {
+      m_fail = !(a >= b);
+
+      return test();
+    }
+
+
+    template<typename A, typename B>
+    std::ostream & testLess(
+        A const & a,
+        B const & b)
+    {
+      m_fail = !(a < b);
+
+      return test();
+    }
+
+
+    template<typename A, typename B>
+    std::ostream & testLessOrEqual(
+        A const & a,
+        B const & b)
+    {
+      m_fail = !(a <= b);
+
+      return test();
+    }
+
+
+   
+  private:
+    std::ostringstream m_stream;
+    bool m_fail;
 };
 
 
@@ -150,6 +202,63 @@ bool UnitTest(
 
 
 }
+
+
+/******************************************************************************
+* TESTS ***********************************************************************
+******************************************************************************/
+
+
+#define testEqual(a,b) \
+  sl::TestStream().testEqual(a,b) << #a << ":'" << (a) \
+      << "' != " << #b << ":'" << (b) << "' at " << __LINE__ << std::endl
+
+
+#define testNotEqual(a,b) \
+  sl::TestStream().testNotEqual(a,b) << #a << ":'" << (a) \
+      << "' == " << #b << ":'" << (b) << "' at " << __LINE__ << std::endl
+
+
+#define testTrue(a) \
+  sl::TestStream().testTrue(a) << #a << "' is false at: " << __LINE__ \
+      << std::endl
+
+
+#define testFalse(a) \
+  sl::TestStream().testFalse(a) << #a << "' is true at: " << __LINE__ \
+      << std::endl
+
+
+#define testGreater(a,b) \
+  sl::TestStream().testGreater(a,b) << #a << ":'" << (a) << "' <= " << #b \
+        << ":'" << (b) << "' at " << __LINE__ << std::endl
+
+
+#define testGreaterOrEqual(a,b) \
+  sl::TestStream().testGreaterOrEqual(a,b) << #a << ":'" << (a) << "' < " << \
+        #b << ":'" << (b) << "' at " << __LINE__ << std::endl
+
+
+#define testLess(a,b) \
+  sl::TestStream().testLess(a,b) << #a << ":'" << (a) << "' >= " << #b << \
+        ":'" << (b) << "' at " << __LINE__ << std::endl
+
+
+#define testLessOrEqual(a,b) \
+  sl::TestStream().testLessOrEqual(a,b) << #a << ":'" << (a) << "' > " << #b \
+        << ":'" << (b) << "' at " << __LINE__ << std::endl
+
+
+#define UNITTEST(CLASS, TEST) \
+  void _unittest_ ## CLASS ## _ ## TEST ## _func(void); \
+  bool _unittest_ ## CLASS ## _ ## TEST ## _result = \
+      sl::UnitTest( \
+          __FILE__":"#CLASS"->"#TEST, \
+          _unittest_ ## CLASS ## _ ## TEST ## _func); \
+  void _unittest_ ## CLASS ## _ ## TEST ## _func(void) \
+
+
+
 
 /******************************************************************************
 * MAIN ************************************************************************

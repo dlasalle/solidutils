@@ -57,9 +57,9 @@ UNITTEST(Array, PrefixSumExclusive)
 
   VectorMath::prefixSumExclusive(m.data(), m.size());
 
-  testEqual(m[0], 0);
-  testEqual(m[1], 3);
-  testEqual(m[2], 4);
+  testEqual(m[0], 0u);
+  testEqual(m[1], 3u);
+  testEqual(m[2], 4u);
 }
 
 
