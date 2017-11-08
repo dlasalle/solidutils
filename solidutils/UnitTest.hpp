@@ -81,6 +81,14 @@ class TestStream
     }
 
 
+    std::ostream & testFail()
+    {
+      m_fail = true;
+
+      return test();
+    }
+
+
     std::ostream & testEqual(
         std::string const & a,
         std::string const & b)
@@ -207,6 +215,11 @@ bool UnitTest(
 /******************************************************************************
 * TESTS ***********************************************************************
 ******************************************************************************/
+
+
+#define testFail() \
+  sl::TestStream().testFail() << "testFail() called at " << __LINE__ << \
+      std::endl
 
 
 #define testEqual(a,b) \
