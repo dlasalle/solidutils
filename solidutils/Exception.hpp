@@ -19,13 +19,30 @@ namespace sl
 {
 
 
+/**
+* @brief The InvalidInputException indicates that the input given to a function
+* or class was not valid.
+*/
 class InvalidInputException :
     public std::runtime_error
 {
   public:
+    /**
+    * @brief Create a new InvalidInputException.
+    *
+    * @param msg The message about what input was invalid.
+    */
     InvalidInputException(
         std::string const & msg) :
       std::runtime_error("Invalid input: " + msg)
+    {
+      // do nothing
+    }
+
+    /**
+    * @brief Virtual destructor.
+    */
+    virtual ~InvalidInputException()
     {
       // do nothing
     }
