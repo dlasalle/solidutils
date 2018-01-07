@@ -48,6 +48,38 @@ class InvalidInputException :
     }
 };
 
+
+/**
+* @brief The InvalidInputException indicates that an operation was attempted
+* that is not valid for an objects current state.
+*/
+class InvalidStateException :
+    public std::runtime_error
+{
+  public:
+    /**
+    * @brief Create a new InvalidStateException.
+    *
+    * @param msg The message about what state was invalid.
+    */
+    InvalidStateException(
+        std::string const & msg) :
+      std::runtime_error("Invalid state: " + msg)
+    {
+      // do nothing
+    }
+
+    /**
+    * @brief Virtual destructor.
+    */
+    virtual ~InvalidStateException()
+    {
+      // do nothing
+    }
+};
+
+
+
 }
 
 
