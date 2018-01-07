@@ -114,6 +114,24 @@ class Timer
         }
 
         /**
+        * @brief Deleted copy constructor.
+        *
+        * @param other The Scope to copy.
+        */
+        Scope(
+            Scope const & other) = delete;
+
+        /**
+        * @brief Deleted assignment operator.
+        *
+        * @param other The Scope to assign from.
+        *
+        * @return The newly assigned Scope.
+        */
+        Scope& operator=(
+            Scope const & other) = delete;
+
+        /**
         * @brief Destroy this timer Scope.
         */
         ~Scope()
