@@ -21,6 +21,41 @@
 namespace sl
 {
 
+/**
+* @brief This class is used to perform wall timings of varius tasks. It
+* provides means to meanually start and stop a timer:
+*
+* ```
+* Timer t;
+*
+* t.start();
+* // perform task 1
+* t.stop();
+*
+* t.start();
+* // perform task 2
+* t.stop();
+*
+* double duration = t.poll();
+* ```
+*
+* It also provides a means to time a scoped environment:
+* ```
+* Timer t;
+*
+* {
+*   Timer::Scope scope = t.scope();
+*   // perform task 1
+* }
+*
+* {
+*   Timer::Scope scope = t.scope();
+*   // perform task 2
+* }
+*
+* double duration = t.poll();
+* ```
+*/
 class Timer
 {
   public:
