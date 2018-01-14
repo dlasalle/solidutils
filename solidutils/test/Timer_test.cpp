@@ -8,10 +8,10 @@
 */
 
 
+#include "Timer.hpp"
 #include <thread>
 #include <chrono>
 #include "UnitTest.hpp"
-#include "Timer.hpp"
 
 
 namespace sl
