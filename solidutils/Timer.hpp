@@ -15,6 +15,7 @@
 
 
 #include <chrono>
+#include <memory>
 #include "Exception.hpp"
 
 
