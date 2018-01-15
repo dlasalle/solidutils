@@ -123,10 +123,13 @@ class Random
     template <typename T>
     inline static void fillWithPerm(
         T * const data,
-        size_t const num) noexcept
+        T const begin,
+        T const end) noexcept
     {
+      size_t const num = end - begin;
+
       for (size_t i = 0; i < num; ++i) {
-        data[i] = static_cast<T>(i);
+        data[i] = begin + static_cast<T>(i);
       }
 
       std::random_shuffle(data, data+num);
@@ -136,23 +139,21 @@ class Random
     /**
     * @brief Fill a memory location with a permutation vector.
     *
-    * @tparam T The type of index.
-    * @param data The memory location.
-    * @param start The starting index.
-    * @param end The ending index (exclusive).
+    * @tparam T The type of container.
+    * @tparam U The type of item.
+    * @param container The container.
+    * @param offset The starting offset.
     */
-    template <typename T>
+    template <typename T, typename U>
     inline static void fillWithPerm(
-        T * const data) noexcept
+        T * const container,
+        U const offset) noexcept
     {
-      // get count to be the type of item in the containre
-      auto count = (*data)[0] = 0;
-      for (auto & item : *data) {
-        item = count;
-        ++count;
+      for (size_t i = 0; i < container->size(); ++i) {
+        (*container)[i] = offset + static_cast<U>(i);
       }
 
-      std::random_shuffle(data->begin(), data->end());
+      std::random_shuffle(container->begin(), container->end());
     }
 };
 
