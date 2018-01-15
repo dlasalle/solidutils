@@ -90,8 +90,8 @@ UNITTEST(Random, fillWithPermRaw)
   std::vector<int> data2(data1.size());
   std::vector<bool> marker(data1.size(), false);
 
-  Random::fillWithPerm(data1.data(), data1.size());
-  Random::fillWithPerm(data2.data(), data2.size());
+  Random::fillWithPerm(data1.data(), 0, static_cast<int>(data1.size()));
+  Random::fillWithPerm(data2.data(), 0, static_cast<int>(data1.size()));
 
   // make sure all parts are covered
   for (int const & num : data1) {
@@ -118,8 +118,8 @@ UNITTEST(Random, fillWithPermContainer)
   std::vector<int> data2(data1.size());
   std::vector<bool> marker(data1.size(), false);
 
-  Random::fillWithPerm(&data1);
-  Random::fillWithPerm(&data2);
+  Random::fillWithPerm(&data1, 0);
+  Random::fillWithPerm(&data2, 0);
 
   // make sure all parts are covered
   for (int const & num : data1) {
