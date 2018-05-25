@@ -44,6 +44,36 @@ UNITTEST(Array, Empty)
 }
 
 
+UNITTEST(Array, Front)
+{
+  Array<size_t> m(10UL);
+  for (size_t i = 0; i < m.size(); ++i) {
+    m[i] = i;
+  }
+
+  testEqual(m.front(), 0UL);
+
+  m.front() = 5UL;
+
+  testEqual(m.front(), 5UL);
+  testEqual(m[0], 5UL);
+}
+
+
+UNITTEST(Array, Back)
+{
+  Array<size_t> m(10UL);
+  for (size_t i = 0; i < m.size(); ++i) {
+    m[i] = i;
+  }
+
+  testEqual(m.back(), m.size()-1);
+
+  m.back() = 5UL;
+
+  testEqual(m.back(), 5UL);
+  testEqual(m[m.size()-1], 5UL);
+}
 
 
 }
