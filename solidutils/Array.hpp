@@ -262,6 +262,47 @@ class Array
       return m_data + m_size;
     }
 
+    /**
+    * @brief Get the front of the array.
+    *
+    * @return The first element.
+    */
+    T const & front() const noexcept
+    {
+      return (*this)[0];
+    }
+
+    /**
+    * @brief Get the front of the array.
+    *
+    * @return The first element.
+    */
+    T & front() noexcept
+    {
+      return (*this)[0];
+    }
+
+    /**
+    * @brief Get the back of the array.
+    *
+    * @return The last element.
+    */
+    T const & back() const noexcept
+    {
+      return (*this)[m_size-1];
+    }
+
+    /**
+    * @brief Get the back of the array.
+    *
+    * @return The last element.
+    */
+    T & back() noexcept
+    {
+      return (*this)[m_size-1];
+    }
+
+
 
   private:
     size_t m_size;
