@@ -33,6 +33,127 @@ class FixedPriorityQueue
   public:
     static constexpr size_t const NULL_INDEX = static_cast<size_t>(-1);
 
+    class ValueSet
+    {
+      public:
+      class Iterator
+      {
+        public:
+        /**
+        * @brief Create a new forward iterator.
+        *
+        * @param index The index of the iterator.
+        * @param q The priority queue being iterated.
+        */
+        Iterator(
+            size_t const index,
+            FixedPriorityQueue<K,V> const * const q) :
+          m_index(index),
+          m_q(q)
+        {
+          // do nothing
+        }
+
+        /**
+        * @brief Get the value of the iterator.
+        *
+        * @return The value.
+        */
+        inline V operator*() const noexcept
+        {
+          size_t const pos = m_q->m_index[m_index];
+          return m_q->m_data[pos].value;
+        }
+
+        /**
+        * @brief Move the iterator forward.
+        *
+        * @return This iterator.
+        */
+        inline Iterator & operator++()
+        {
+          do {
+            ++m_index;
+          } while (m_index < m_q->m_index.size() && \
+              m_q->m_index[m_index] == NULL_INDEX);
+
+          return *this;
+        }
+
+        /**
+        * @brief Check if this iterator is the same as another.
+        *
+        * @param other The other iterator.
+        *
+        * @return True if they are at the same position.
+        */
+        inline bool operator==(
+            Iterator const & other) const
+        {
+          return m_index == other.m_index;
+        }
+
+        /**
+        * @brief Check if this iterator is different from another iterator.
+        *
+        * @param other The other iterator.
+        *
+        * @return True if the iterators are not equal.
+        */
+        inline bool operator!=(
+            Iterator const & other) const
+        {
+          return !(*this == other);
+        }
+
+        private:
+        size_t m_index;
+        FixedPriorityQueue<K,V> const * m_q;
+      };
+
+      /**
+      * @brief Create a new value set.
+      *
+      * @param q The priority queue.
+      */
+      ValueSet(
+          FixedPriorityQueue<K,V> const * const q) :
+        m_q(q)
+      {
+        // do nothing 
+      }
+
+      /**
+      * @brief Get the forward iterator to the start of the set.
+      *
+      * @return The forward iterator.
+      */
+      inline Iterator begin() const noexcept
+      {
+        // find first valid index
+        size_t index = 0;
+        while (index < m_q->m_index.size() && \
+            m_q->m_index[index] == NULL_INDEX) {
+          ++index;
+        }
+
+        return Iterator(index, m_q);
+      }
+
+      /**
+      * @brief Get the forward iterator to the end of the set.
+      *
+      * @return The end iterator.
+      */
+      inline Iterator end() const noexcept
+      {
+        return Iterator(m_q->m_index.size(), m_q);
+      }
+
+      private:
+      FixedPriorityQueue<K,V> const * m_q;
+    };
+
     /**
     * @brief Create a new priority queue that can hold element 0 through max.
     *
@@ -111,6 +232,25 @@ class FixedPriorityQueue
       }
     }
 
+
+    /**
+    * @brief Update the key associated with a given value by modifying the key.
+    *
+    * @param delta The change in priority.
+    * @param value The value.
+    */
+    void updateByDelta(
+        K const delta,
+        V const value) noexcept
+    {
+      ASSERT_LESS(static_cast<size_t>(value), m_index.size());
+      ASSERT_NOTEQUAL(m_index[value], NULL_INDEX);
+
+      size_t const index = m_index[value];
+      V const key = m_data[index].key + delta;
+
+      update(key, value);
+    }
 
     /**
     * @brief Check if a value in present in the priority queue.
@@ -203,6 +343,18 @@ class FixedPriorityQueue
         m_index[m_data[i].value] = NULL_INDEX;
       }
       m_size = 0;
+    }
+
+
+    /**
+    * @brief Get the set of remaining items in the priority. The order of the
+    * values is arbitrary.
+    *
+    * @return The set of values.
+    */
+    ValueSet remaining() const noexcept
+    {
+      return ValueSet(this);
     }
 
 

@@ -114,6 +114,45 @@ UNITTEST(FixedPriortyQueue, AddUpdate)
   }
 }
 
+UNITTEST(FixedPriortyQueue, UpdateByDelta)
+{
+  FixedPriorityQueue<float, int> pq(10);
+
+  for (int i = 0; i < 10; ++i) {
+    pq.add(i, i);
+  }
+
+  for (int i = 0; i < 10; ++i) {
+    if (i % 3 == 0) {
+      pq.updateByDelta(i, i);
+    }
+  }
+
+  // verify top element
+  testEqual(pq.max(), 18);
+  testEqual(pq.peek(), 9);
+
+  float lastPriority = pq.max();
+  for (int i = 0; i < 10; ++i) {
+    float const newPriority = pq.max();
+    int const x = pq.pop();
+
+    // verify we're getting them in order
+    testLessOrEqual(newPriority, lastPriority);
+
+    // verify we have the right priority
+    if (x % 3 == 0) {
+      testEqual(newPriority, static_cast<float>(x*2));
+    } else {
+      testEqual(newPriority, static_cast<float>(x));
+    }
+
+    lastPriority = newPriority;
+  }
+}
+
+
+
 
 UNITTEST(FixedPriortyQueue, AddPopReverseOrder)
 {
@@ -187,5 +226,42 @@ UNITTEST(FixedPriortyQueue, Clear)
   }
 }
 
+
+UNITTEST(FixedPriorityQueue, RemainingAll)
+{
+  FixedPriorityQueue<float, int> pq(10);
+
+  for (int i = 0; i < 10; ++i) {
+    pq.add(1.0/(i+1), i);
+  }
+
+  size_t count = 0;
+  for (int const i : pq.remaining()) {
+    ++count;
+    testTrue(pq.contains(i));
+  }
+
+  testEqual(count, pq.size());
+}
+
+UNITTEST(FixedPriorityQueue, RemainingHalf)
+{
+  FixedPriorityQueue<float, int> pq(10);
+
+  for (int i = 0; i < 7; ++i) {
+    pq.add(1.0/(i+1), i);
+  }
+
+  pq.pop();
+  pq.pop();
+
+  size_t count = 0;
+  for (int const i : pq.remaining()) {
+    ++count;
+    testTrue(pq.contains(i));
+  }
+
+  testEqual(count, pq.size());
+}
 
 }
