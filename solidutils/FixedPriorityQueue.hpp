@@ -39,6 +39,12 @@ class FixedPriorityQueue
       class Iterator
       {
         public:
+        /**
+        * @brief Create a new forward iterator.
+        *
+        * @param index The index of the iterator.
+        * @param q The priority queue being iterated.
+        */
         Iterator(
             size_t const index,
             FixedPriorityQueue<K,V> const * const q) :
@@ -48,12 +54,22 @@ class FixedPriorityQueue
           // do nothing
         }
 
+        /**
+        * @brief Get the value of the iterator.
+        *
+        * @return The value.
+        */
         inline V operator*() const noexcept
         {
           size_t const pos = m_q->m_index[m_index];
           return m_q->m_data[pos].value;
         }
 
+        /**
+        * @brief Move the iterator forward.
+        *
+        * @return This iterator.
+        */
         inline Iterator & operator++()
         {
           do {
@@ -64,12 +80,26 @@ class FixedPriorityQueue
           return *this;
         }
 
+        /**
+        * @brief Check if this iterator is the same as another.
+        *
+        * @param other The other iterator.
+        *
+        * @return True if they are at the same position.
+        */
         inline bool operator==(
             Iterator const & other) const
         {
           return m_index == other.m_index;
         }
 
+        /**
+        * @brief Check if this iterator is different from another iterator.
+        *
+        * @param other The other iterator.
+        *
+        * @return True if the iterators are not equal.
+        */
         inline bool operator!=(
             Iterator const & other) const
         {
@@ -81,6 +111,11 @@ class FixedPriorityQueue
         FixedPriorityQueue<K,V> const * m_q;
       };
 
+      /**
+      * @brief Create a new value set.
+      *
+      * @param q The priority queue.
+      */
       ValueSet(
           FixedPriorityQueue<K,V> const * const q) :
         m_q(q)
@@ -88,6 +123,11 @@ class FixedPriorityQueue
         // do nothing 
       }
 
+      /**
+      * @brief Get the forward iterator to the start of the set.
+      *
+      * @return The forward iterator.
+      */
       inline Iterator begin() const noexcept
       {
         // find first valid index
@@ -100,6 +140,11 @@ class FixedPriorityQueue
         return Iterator(index, m_q);
       }
 
+      /**
+      * @brief Get the forward iterator to the end of the set.
+      *
+      * @return The end iterator.
+      */
       inline Iterator end() const noexcept
       {
         return Iterator(m_q->m_index.size(), m_q);
