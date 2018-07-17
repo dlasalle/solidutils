@@ -93,7 +93,9 @@ class TestStream
         std::string const & a,
         std::string const & b)
     {
-      m_fail = !(a.compare(b) == 0);
+      if (!m_fail) {
+        m_fail = !(a.compare(b) == 0);
+      }
 
       return test();
     }
@@ -104,7 +106,9 @@ class TestStream
         A const & a,
         B const & b)
     {
-      m_fail = !(a == b);
+      if (!m_fail) {
+        m_fail = !(a == b);
+      }
 
       return test();
     }
@@ -115,7 +119,9 @@ class TestStream
         A const & a,
         B const & b)
     {
-      m_fail = (a == b);
+      if (!m_fail) {
+        m_fail = (a == b);
+      }
 
       return test();
     }
@@ -124,7 +130,9 @@ class TestStream
     std::ostream & testTrue(
         bool const pass)
     {
-      m_fail = !pass;
+      if (!m_fail) {
+        m_fail = !pass;
+      }
 
       return test();
     }
@@ -133,7 +141,9 @@ class TestStream
     std::ostream & testFalse(
         bool const fail)
     {
-      m_fail = fail;
+      if (!m_fail) {
+        m_fail = fail;
+      }
 
       return test();
     }
@@ -144,7 +154,9 @@ class TestStream
         A const & a,
         B const & b)
     {
-      m_fail = !(a > b);
+      if (!m_fail) {
+        m_fail = !(a > b);
+      }
 
       return test();
     }
@@ -155,7 +167,9 @@ class TestStream
         A const & a,
         B const & b)
     {
-      m_fail = !(a >= b);
+      if (!m_fail) {
+        m_fail = !(a >= b);
+      }
 
       return test();
     }
@@ -166,7 +180,9 @@ class TestStream
         A const & a,
         B const & b)
     {
-      m_fail = !(a < b);
+      if (!m_fail) {
+        m_fail = !(a < b);
+      }
 
       return test();
     }
@@ -177,7 +193,9 @@ class TestStream
         A const & a,
         B const & b)
     {
-      m_fail = !(a <= b);
+      if (!m_fail) {
+        m_fail = !(a <= b);
+      }
 
       return test();
     }
