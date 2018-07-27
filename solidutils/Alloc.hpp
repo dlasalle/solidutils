@@ -104,7 +104,7 @@ class Alloc
     template<typename T>
     static T * initialized(
         size_t const num,
-        T const val = 0)
+        T const val = static_cast<T>(0))
     {
       T * const data = uninitialized<T>(num);
       for (size_t i = 0; i < num; ++i) {
@@ -172,7 +172,7 @@ class Alloc
     */
     template<typename T>
     static void free(
-        T * const ptr)
+        T * const ptr) noexcept
     {
       if (ptr != nullptr) {
         std::free(ptr);

@@ -23,9 +23,10 @@ namespace sl
 
 /**
 * @brief The Array class provides functionality similar to std::vector, except
-* that it is not resizable, and does not construct or destruct elements. This
-* is for performance reasons when initialization is not required. However, this
-* makes it unsuitable for anything other than primitive datatypes.
+* that it does not construct or destruct elements, and does not allow
+* insertions or append. This is for performance reasons when initialization
+* is not required. However, this makes it unsuitable for anything other than
+* primitive datatypes or other structures movemable with a simple memcpy().
 *
 * @tparam T The type of element.
 */
@@ -126,6 +127,8 @@ class Array
     * @brief Resize the array.
     *
     * @param size The new size.
+    *
+    * @throw std::bad_alloc If there is not enough memory.
     */
     void resize(
         size_t const size)
