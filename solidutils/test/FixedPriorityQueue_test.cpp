@@ -119,17 +119,17 @@ UNITTEST(FixedPriortyQueue, UpdateByDelta)
   FixedPriorityQueue<float, int> pq(10);
 
   for (int i = 0; i < 10; ++i) {
-    pq.add(i, i);
+    pq.add(-i, i);
   }
 
   for (int i = 0; i < 10; ++i) {
     if (i % 3 == 0) {
-      pq.updateByDelta(i, i);
+      pq.updateByDelta(2*i, i);
     }
   }
 
   // verify top element
-  testEqual(pq.max(), 18);
+  testEqual(pq.max(), 9);
   testEqual(pq.peek(), 9);
 
   float lastPriority = pq.max();
@@ -142,9 +142,9 @@ UNITTEST(FixedPriortyQueue, UpdateByDelta)
 
     // verify we have the right priority
     if (x % 3 == 0) {
-      testEqual(newPriority, static_cast<float>(x*2));
-    } else {
       testEqual(newPriority, static_cast<float>(x));
+    } else {
+      testEqual(newPriority, static_cast<float>(-x));
     }
 
     lastPriority = newPriority;
