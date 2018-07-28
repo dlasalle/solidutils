@@ -25,6 +25,16 @@ UNITTEST(Geometry, deg2radTest)
   testNearEqual(2.0*Geometry::PI, Geometry::deg2rad(360.0), 1e-6, 0.0);
 }
 
+UNITTEST(Geometry, rad2degTest)
+{
+  testNearEqual(45.0, Geometry::rad2deg(Geometry::PI / 4.0), 1e-6, 0.0);
+  testNearEqual(90.0, Geometry::rad2deg(Geometry::PI / 2.0), 1e-6, 0.0);
+  testNearEqual(180.0, Geometry::rad2deg(Geometry::PI), 1e-6, 0.0);
+  testNearEqual(270.0, Geometry::rad2deg((3.0*Geometry::PI) / 2.0), 1e-6, 0.0);
+  testNearEqual(360.0, Geometry::rad2deg(2.0*Geometry::PI), 1e-6, 0.0);
+}
+
+
 
 
 }
