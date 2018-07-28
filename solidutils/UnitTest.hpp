@@ -114,6 +114,24 @@ class TestStream
     }
 
 
+    std::ostream & testNearEqual(
+        double const a,
+        double const b,
+        double const ratio = 1e-6,
+        double const buffer = 1e-9)
+    {
+      if (std::abs(a - b) <= buffer) {
+        m_fail = false;
+      } else if (-a == b) {
+        m_fail = true;
+      } else {
+        m_fail = std::abs((a-b)/(a+b)) >= ratio;
+      }
+
+      return test();
+    }
+
+
     template<typename A, typename B>
     std::ostream & testNotEqual(
         A const & a,
@@ -278,6 +296,11 @@ bool UnitTest(
 #define testLessOrEqual(a,b) \
   sl::TestStream().testLessOrEqual(a,b) << #a << ":'" << (a) << "' > " << #b \
         << ":'" << (b) << "' at " << __LINE__ << std::endl
+
+
+#define testNearEqual(a, b, c, d) \
+  sl::TestStream().testNearEqual(a, b, c, d) << #a << ":'" << (a) \
+      << "' != " << #b << ":'" << (b) << "' at " << __LINE__ << std::endl
 
 
 #define UNITTEST(CLASS, TEST) \
