@@ -4,5 +4,5 @@ compiler:
   - clang
   - gcc
 script:
-  - "./configure --debug --devel && make && make test"
-  - "./configure && make && make test"
+  - "./configure --debug --devel && make && CTEST_OUTPUT_ON_FAILURE=1 make test"
+  - "./configure && make && CTEST_OUTPUT_ON_FAILURE=1 make test"
