@@ -30,9 +30,12 @@
 #define SOLIDUTILS_INCLUDE_RANDOM_HPP
 
 
-#include <cstdlib>
-#include <algorithm>
 #include "Debug.hpp"
+
+#include <cstddef>
+#include <algorithm>
+#include <type_traits>
+
 
 
 namespace sl
@@ -41,63 +44,32 @@ namespace sl
 /**
 * @brief The Random class provides wrappers around base 'random' functionality,
 * such as getting a number within a given range, shuffling elements, or filling
-* an array with large amounts of random data. The functions contained here in
-* make no effort to provide random numbers with any particular distribution,
-* but rather focus on generating random numbers as fast as possible. Any
-* application which needs high quality random numbers should not use this
-* class.
+* an array with large amounts of random data. This class assumes
+* psuedo-randomness is sufficient and that performance is more important, and
+* thus should not be used where unpredictability or uniform distribution is
+* desired.
 */
 class Random
 {
   public:
     /**
-    * @brief Get a single random number in a specified range (inclusive). If
-    * min is greater than max, the behavior is undefined (very bad).
+    * @brief Get a random number within the given range. The distribution may
+    * not be uniform.
     *
-    * @tparam T The type of number to get.
-    * @param min The minimum value (inclusive).
-    * @param max The maximum value (exclusive).
+    * @tparam T The type of random source.
+    * @tparam URBG The random source.
+    * @param min The lower bound (inclusive).
+    * @param max The upper bound (exclusive).
+    * @param rng The random source.
     */
-    template <typename T>
-    inline static T inRange(
+    template<typename T, typename URBG>
+    static T inRange(
         T const min,
-        T const max) noexcept
+        T const max,
+        URBG&& rng) noexcept
     {
-      ASSERT_LESS(min, max);
-
       T const range = max - min;
-      T const entropy = std::rand() % range;
-
-      return entropy + min;
-    }
-
-    /**
-    * @brief Fill a location in memory with random numbers. If min and max are
-    * the same, an optimization is used where random is never called. If min is
-    * greater than max, the behavior is undefined (very bad).
-    *
-    * @tparam T The type of number to fill with.
-    * @param data The memory location.
-    * @param num The number of elements to insert.
-    * @param min The minimum number (inclusive).
-    * @param max The maximum number (exclusive).
-    */
-    template <typename T>
-    inline static void fillWithRange(
-        T * const data,
-        size_t const num,
-        T const min,
-        T const max) noexcept
-    {
-      if (min == max) {
-        for (size_t i = 0; i < num; ++i) {
-          data[i] = min;
-        }
-      } else {
-        for (size_t i = 0; i < num; ++i) {
-          data[i] = inRange(min, max);
-        }
-      }
+      return min + static_cast<T>(static_cast<uint64_t>(rng()) % range);
     }
 
 
@@ -106,25 +78,28 @@ class Random
     * the same, an optimization is used where random is never called. If min is
     * greater than max, the behavior is undefined (very bad).
     *
-    * @tparam T The type of container.
-    * @tparam U The type of number to fill with.
-    * @param container The container to fill.
+    * @tparam T The type of iterator.
+    * @tparam URBG The type of random source.
+    * @param range The range of elements to fill.
     * @param min The minimum number (inclusive).
     * @param max The maximum number (exclusive).
+    * @param rng The random source.
     */
-    template <typename T, typename U>
-    inline static void fillWithRange(
-        T * const container,
-        U const min,
-        U const max) noexcept
+    template <typename T, typename URBG>
+    static void fillWithRange(
+        T * const data,
+        size_t const num,
+        T const min,
+        T const max,
+        URBG&& rng) noexcept
     {
       if (min == max) {
-        for (size_t i = 0; i < container->size(); ++i) {
-          (*container)[i] = min;
+        for (size_t i = 0; i < num; ++i) {
+          data[i] = min;
         }
       } else {
-        for (size_t i = 0; i < container->size(); ++i) {
-          (*container)[i] = inRange(min, max);
+        for (size_t i = 0; i < num; ++i) {
+          data[i] = inRange(min, max, rng);
         }
       }
     }
@@ -133,46 +108,113 @@ class Random
     /**
     * @brief Fill a memory location with a permutation vector.
     *
-    * @tparam T The type of index.
-    * @param data The memory location.
-    * @param start The starting index.
-    * @param end The ending index (exclusive).
+    * @tparam T The type of data.
+    * @tparam URBG The type of random source.
+    * @param data The range of elements to fill.
+    * @param begin The starting index.
     */
-    template <typename T>
-    inline static void fillWithPerm(
+    template <typename T, typename URBG>
+    static void fillWithPerm(
         T * const data,
-        T const begin,
-        T const end) noexcept
+        size_t const num,
+        T const offset,
+        URBG&& rng) noexcept
     {
-      size_t const num = end - begin;
+      std::uniform_int_distribution<T> dist(offset, \
+          offset+static_cast<T>(num-1));
 
+      // start off with everything shifted by a random amount
       for (size_t i = 0; i < num; ++i) {
-        data[i] = begin + static_cast<T>(i);
+        data[i] = ((i+offset)%num)+offset;
       }
 
-      std::random_shuffle(data, data+num);
+      pseudoShuffle(data, num, rng);
     }
-
 
     /**
-    * @brief Fill a memory location with a permutation vector.
+    * @brief Re-order the elements in array in a randomly. This is
+    * less random than std::shuffle, but is significantly faster for large
+    * arrays.
     *
-    * @tparam T The type of container.
-    * @tparam U The type of item.
-    * @param container The container.
-    * @param offset The starting offset.
+    * @tparam T The type of elements.
+    * @tparam URBG The type of random source.
+    * @param data The data to shuffle.
+    * @param num The number of elements.
+    * @param rng The random source.
     */
-    template <typename T, typename U>
-    inline static void fillWithPerm(
-        T * const container,
-        U const offset) noexcept
+    template <typename T, typename URBG>
+    static void pseudoShuffle(
+        T * const data,
+        size_t const num,
+        URBG&& rng) noexcept
     {
-      for (size_t i = 0; i < container->size(); ++i) {
-        (*container)[i] = offset + static_cast<U>(i);
-      }
+      constexpr size_t swapSize = 8;
+      constexpr size_t minSize = 64;
 
-      std::random_shuffle(container->begin(), container->end());
+      if (num < minSize) {
+        // for small arrays, resort to std::shuffle
+        std::shuffle(data, data+num, rng);
+      } else {
+        std::uniform_int_distribution<size_t> indexDist(0, num-swapSize);
+        std::uniform_int_distribution<int> swapDist(0, 4);
+
+        // The below swapping is originally based on the algorithm used in
+        // `randArrayPermute()` function in George Karypis's GKLib.
+
+        // perform several network swaps
+        for (size_t swap = 0; swap < num/swapSize; ++swap) {
+          size_t const start = indexDist(rng);
+          size_t const end = indexDist(rng);
+          int const swapSet = swapDist(rng);
+          switch (swapSet) {
+            case 0:
+              std::swap(data[start], data[end+1]);
+              std::swap(data[start+1], data[end+4]);
+              std::swap(data[start+2], data[end+7]);
+              std::swap(data[start+3], data[end+3]);
+              std::swap(data[start+4], data[end+2]);
+              std::swap(data[start+5], data[end+6]);
+              std::swap(data[start+6], data[end]);
+              std::swap(data[start+7], data[end+5]);
+              break;
+            case 1:
+              std::swap(data[start], data[end+5]);
+              std::swap(data[start+1], data[end+3]);
+              std::swap(data[start+2], data[end+1]);
+              std::swap(data[start+3], data[end+6]);
+              std::swap(data[start+4], data[end]);
+              std::swap(data[start+5], data[end+7]);
+              std::swap(data[start+6], data[end+2]);
+              std::swap(data[start+7], data[end+4]);
+              break;
+            case 2:
+              std::swap(data[start], data[end+3]);
+              std::swap(data[start+1], data[end+5]);
+              std::swap(data[start+2], data[end+6]);
+              std::swap(data[start+3], data[end+1]);
+              std::swap(data[start+4], data[end+2]);
+              std::swap(data[start+5], data[end]);
+              std::swap(data[start+6], data[end+4]);
+              std::swap(data[start+7], data[end+7]);
+              break;
+            case 3:
+              std::swap(data[start], data[end+7]);
+              std::swap(data[start+1], data[end]);
+              std::swap(data[start+2], data[end+2]);
+              std::swap(data[start+3], data[end+3]);
+              std::swap(data[start+4], data[end+4]);
+              std::swap(data[start+5], data[end+1]);
+              std::swap(data[start+6], data[end+6]);
+              std::swap(data[start+7], data[end+5]);
+              break;
+          }
+        }
+      }
     }
+
+
+
+
 };
 
 
