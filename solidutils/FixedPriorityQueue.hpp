@@ -299,7 +299,7 @@ class FixedPriorityQueue
       ASSERT_LESS(static_cast<size_t>(value), m_index.size());
       ASSERT_NOTEQUAL(m_index[value], NULL_INDEX);
 
-      return m_data[m_index[value]].data;
+      return m_data[m_index[value]].key;
     }
 
 

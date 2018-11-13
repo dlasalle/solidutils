@@ -10,38 +10,23 @@
 
 #include "Random.hpp"
 #include "UnitTest.hpp"
+
 #include <vector>
+#include <random>
 
 
 namespace sl
 {
 
-UNITTEST(Random, InRange)
-{
-  int min = 0;
-  int max = 5;
-  std::vector<bool> mask(max-min, false);
-
-  for (size_t i = 0; i < mask.size()*10000; ++i) {
-    int index = Random::inRange(min, max);
-    testLess(index, static_cast<int>(mask.size()));
-    testGreaterOrEqual(index, 0);
-    mask[index] = true;
-  }
-
-  for (bool const & val : mask) {
-    testTrue(val);
-  }
-}
-
-
-UNITTEST(Random, fillWithRangeRaw)
+UNITTEST(Random, fillWithRange)
 {
   std::vector<int> data1(100);
   std::vector<int> data2(data1.size());
 
-  Random::fillWithRange(data1.data(), data1.size(), 5, 10);
-  Random::fillWithRange(data2.data(), data2.size(), 5, 10);
+  std::mt19937 rng(0);
+
+  Random::fillWithRange(data1.data(), data1.size(), 5, 10, rng);
+  Random::fillWithRange(data2.data(), data2.size(), 5, 10, rng);
 
   // check range
   for (int const & num : data1) {
@@ -59,30 +44,6 @@ UNITTEST(Random, fillWithRangeRaw)
   testFalse(same);
 }
 
-
-UNITTEST(Random, fillWithRangeContainer)
-{
-  std::vector<int> data1(100);
-  std::vector<int> data2(data1.size());
-
-  Random::fillWithRange(&data1, 5, 10);
-  Random::fillWithRange(&data2, 5, 10);
-
-  // check range
-  for (int const & num : data1) {
-    testGreaterOrEqual(num, 5);
-    testLess(num, 10);
-  }
-
-  // make sure two are not the same
-  bool same = true;
-  for (size_t i = 0; i < data1.size(); ++i) {
-    if (data1[i] != data2[i]) {
-      same = false;
-    }
-  }
-  testFalse(same);
-}
 
 UNITTEST(Random, fillWithPermRaw)
 {
@@ -90,8 +51,10 @@ UNITTEST(Random, fillWithPermRaw)
   std::vector<int> data2(data1.size());
   std::vector<bool> marker(data1.size(), false);
 
-  Random::fillWithPerm(data1.data(), 0, static_cast<int>(data1.size()));
-  Random::fillWithPerm(data2.data(), 0, static_cast<int>(data1.size()));
+  std::mt19937 rng(0);
+
+  Random::fillWithPerm(data1.data(), data1.size(), 0, rng);
+  Random::fillWithPerm(data2.data(), data2.size(), 0, rng);
 
   // make sure all parts are covered
   for (int const & num : data1) {
@@ -112,33 +75,52 @@ UNITTEST(Random, fillWithPermRaw)
   testFalse(same);
 }
 
-UNITTEST(Random, fillWithPermContainer)
+
+UNITTEST(Random, pseudoShuffleSane)
+{
+  std::vector<int> data(1000);
+  std::vector<bool> marker(data.size(), false);
+
+  std::mt19937 rng(0);
+
+  Random::pseudoShuffle(data.data(), data.size(), rng);
+
+  for (size_t i = 0; i < data.size(); ++i) {
+    testFalse(marker[i]);
+    marker[i] = true;
+  }
+
+  for (bool const mark : marker) {
+    testTrue(mark);
+  }
+}
+
+UNITTEST(Random, pseudoShuffleDifferent)
 {
   std::vector<int> data1(1000);
-  std::vector<int> data2(data1.size());
-  std::vector<bool> marker(data1.size(), false);
+  std::vector<int> data2(1000);
 
-  Random::fillWithPerm(&data1, 0);
-  Random::fillWithPerm(&data2, 0);
-
-  // make sure all parts are covered
-  for (int const & num : data1) {
-    testFalse(marker[num]);
-    marker[num] = true;
-  }
-  for (bool const & mark : marker) {
-    testTrue(mark);
+  for (size_t i = 0; i < data1.size(); ++i) {
+    data1[i] = static_cast<int>(i);
+    data2[i] = static_cast<int>(i);
   }
 
-  // make sure two permutations are not the same
-  bool same = true;
+  std::mt19937 rng(0);
+
+  Random::pseudoShuffle(data1.data(), data1.size(), rng);
+  Random::pseudoShuffle(data2.data(), data2.size(), rng);
+
+  // expect many differences
+  size_t difference = 0;
   for (size_t i = 0; i < data1.size(); ++i) {
     if (data1[i] != data2[i]) {
-      same = false;
+      ++difference;
     }
   }
-  testFalse(same);
+
+  testGreater(difference, 900UL);
 }
+
 
 
 }
