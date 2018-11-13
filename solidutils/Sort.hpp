@@ -30,6 +30,7 @@
 #define SOLIDUTILS_SORT_HPP
 
 #include "VectorMath.hpp"
+#include "Random.hpp"
 
 #include <memory>
 #include <vector>
@@ -118,7 +119,7 @@ class Sort
       // randomize each bucket
       size_t start = 0;
       for (size_t i = 0; start < num; ++i) {
-        std::shuffle(out.get() + start, out.get() + counts[i], rng);
+        sl::Random::pseudoShuffle(out.get()+start, counts[i] - start, rng);
         start = counts[i];
       }
 
