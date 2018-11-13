@@ -120,12 +120,8 @@ class Random
         T const offset,
         URBG&& rng) noexcept
     {
-      std::uniform_int_distribution<T> dist(offset, \
-          offset+static_cast<T>(num-1));
-
-      // start off with everything shifted by a random amount
       for (size_t i = 0; i < num; ++i) {
-        data[i] = ((i+offset)%num)+offset;
+        data[i] = static_cast<T>(i)+offset;
       }
 
       pseudoShuffle(data, num, rng);
