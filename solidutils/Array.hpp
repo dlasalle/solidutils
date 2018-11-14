@@ -31,9 +31,9 @@
 #define SOLIDUTILS_INCLUDE_ARRAY_HPP
 
 
-#include <cstring>
-#include "Alloc.hpp"
 #include "Debug.hpp"
+
+#include <memory>
 
 
 namespace sl
@@ -60,7 +60,7 @@ class Array
     Array(
         size_t const size) :
       m_size(size),
-      m_data(Alloc::uninitialized<T>(size))
+      m_data(new T[size])
     {
       // do nothing
     }
@@ -74,26 +74,24 @@ class Array
     Array(
         size_t const size,
         T const value) :
-      m_size(size),
-      m_data(Alloc::initialized<T>(size, value))
+      Array(size)
     {
-      // do nothing
+      std::fill(m_data.get(), m_data.get()+m_size, value);
     }
 
 
     /**
-    * @brief Copy a memory location into a new array.
+    * @brief Copy a set of data into a new array.
     *
-    * @param ptr The memory location.
-    * @param size The number of elements.
+    * @param ptr The pointer.
+    * @param size The number of elements to copy.
     */
     Array(
         T const * const ptr,
         size_t const size) :
-      m_size(size),
-      m_data(Alloc::duplicate(ptr, size))
+      Array(size)
     {
-      // do nothing
+      std::copy(ptr, ptr+size, m_data.get());
     }
 
 
@@ -105,20 +103,30 @@ class Array
     Array(
         Array && lhs) noexcept :
       m_size(lhs.m_size),
-      m_data(lhs.m_data)
+      m_data(std::move(lhs.m_data))
     {
       lhs.m_size = 0;
-      lhs.m_data = nullptr;
     }
 
 
     /**
-    * @brief The destructor.
+    * @brief Deleted copy-assignment operator.
+    *
+    * @param rhs The Array to copy.
     */
-    ~Array()
-    {
-      Alloc::free(m_data);
-    }
+    Array(
+        Array const & rhs) = delete;
+
+
+    /**
+    * @brief Deleted assignment operator.
+    *
+    * @param lhs The Array to copy.
+    *
+    * @return This array.
+    */
+    Array & operator=(
+        Array const & rhs) = delete;
 
 
     /**
@@ -132,34 +140,11 @@ class Array
         Array && lhs)
     {
       m_size = lhs.m_size;
-      m_data = lhs.m_data;
+      m_data = std::move(lhs.m_data);
 
       lhs.m_size = 0;
-      lhs.m_data = nullptr;
 
       return *this;
-    }
-
-
-    /**
-    * @brief Resize the array.
-    *
-    * @param size The new size.
-    *
-    * @throw std::bad_alloc If there is not enough memory.
-    */
-    void resize(
-        size_t const size)
-    {
-      if (m_size > 0) {
-        // actually resize
-        m_size = size;
-        Alloc::resize<T>(&m_data, size);
-      } else {
-        // initialize allocation
-        m_size = size;
-        m_data = Alloc::uninitialized<T>(size);
-      }
     }
 
 
@@ -214,7 +199,7 @@ class Array
     */
     T * data() noexcept
     {
-      return m_data;
+      return m_data.get();
     }
 
 
@@ -225,7 +210,7 @@ class Array
     */
     T const * data() const noexcept
     {
-      return m_data;
+      return m_data.get();
     }
 
 
@@ -247,7 +232,7 @@ class Array
     */
     T const * begin() const noexcept
     {
-      return m_data;
+      return m_data.get();
     }
 
 
@@ -258,7 +243,7 @@ class Array
     */
     T const * end() const noexcept
     {
-      return m_data + m_size;
+      return m_data.get() + m_size;
     }
 
 
@@ -269,7 +254,7 @@ class Array
     */
     T * begin() noexcept
     {
-      return m_data;
+      return m_data.get();
     }
 
 
@@ -280,7 +265,7 @@ class Array
     */
     T * end() noexcept
     {
-      return m_data + m_size;
+      return m_data.get() + m_size;
     }
 
     /**
@@ -327,14 +312,7 @@ class Array
 
   private:
     size_t m_size;
-    T * m_data;
-
-    // disable copying
-    Array(
-        Array const & lhs);
-    Array & operator=(
-        Array const & lhs);
-
+    std::unique_ptr<T[]> m_data;
 
 };
 
