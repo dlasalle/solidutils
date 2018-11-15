@@ -2,7 +2,7 @@
  * @file Sort.hpp
  * @brief The Sort class.
  * @author Dominique LaSalle <dominique@solidlake.com>
- * Copyright 2018
+ * Copyright 2018, Solid Lake LLC
  * @version 1
  * @date 2018-08-23
  *
