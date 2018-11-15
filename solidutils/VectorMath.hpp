@@ -33,6 +33,8 @@
 
 #include "Array.hpp"
 
+#include <type_traits>
+
 
 namespace sl
 {
@@ -104,19 +106,37 @@ class VectorMath
         T * const data,
         size_t const size) noexcept
     {
-      T sum = 0;
-      for (size_t i = 0; i < size; ++i) {
-        T const val = data[i];
-        data[i] = sum;
-        sum += val;
-      }
+      prefixSumExclusive(data, data+size);
     }
 
 
+    /**
+    * @brief Perform a prefix sum on an array.
+    *
+    * @tparam T The type of elements in the array.
+    * @param data The starting location of memory.
+    * @param size The number of elements in the array.
+    */
+    template <typename T>
+    static void prefixSumExclusive(
+        T const begin,
+        T const end) noexcept
+    {
+      using V = typename std::remove_reference<decltype(*begin)>::type;
+      V sum = 0;
+      for (T iter = begin; iter != end; ++iter) {
+        V const val = *iter;
+        *iter = sum;
+        sum += val;
+      }
+    }
 };
 
 
+
+
 }
+
 
 
 
