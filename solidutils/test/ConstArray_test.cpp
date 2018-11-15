@@ -2,7 +2,7 @@
 * @file ConstArray_test.cpp
 * @brief Unit tests for the ConstArray class.
 * @author Dominique LaSalle <dominique@solidlake.com>
-* Copyright 2018
+* Copyright 2018, Solid Lake LLC
 * @version 1
 * @date 2018-11-14
 */

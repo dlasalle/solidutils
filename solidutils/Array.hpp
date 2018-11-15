@@ -1,7 +1,6 @@
 /**
 * @file Array.hpp
-* @brief A mutable array structure for storing self-allocated or externally
-* allocated memory.
+* @brief A mutable array structure for storing self-allocated memory.
 * @author Dominique LaSalle <dominique@solidlake.com>
 * Copyright 2017-2018, Solid Lake LLC
 * @version 1
@@ -77,21 +76,6 @@ class Array
       Array(size)
     {
       std::fill(m_data.get(), m_data.get()+m_size, value);
-    }
-
-
-    /**
-    * @brief Copy a set of data into a new array.
-    *
-    * @param ptr The pointer.
-    * @param size The number of elements to copy.
-    */
-    Array(
-        T const * const ptr,
-        size_t const size) :
-      Array(size)
-    {
-      std::copy(ptr, ptr+size, m_data.get());
     }
 
 
@@ -308,7 +292,16 @@ class Array
       return (*this)[m_size-1];
     }
 
-
+    /**
+    * @brief Pull out the heap memory from this Array, leaving it empty.
+    *
+    * @return The unique pointer to the heap memory.
+    */
+    std::unique_ptr<T[]> steal() noexcept
+    {
+      m_size = 0;
+      return std::unique_ptr<T[]>(std::move(m_data));
+    }
 
   private:
     size_t m_size;
