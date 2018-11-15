@@ -1,10 +1,11 @@
 /**
-* @file Array.hpp
-* @brief A mutable array structure for storing self-allocated memory.
+* @file ConstArray.hpp
+* @brief A constant array structure for storing self-allocated or externally
+* allocated memory.
 * @author Dominique LaSalle <dominique@solidlake.com>
-* Copyright 2017-2018, Solid Lake LLC
+* Copyright 2018, Solid Lake LLC
 * @version 1
-* @date 2017-10-06
+* @date 2018-10-14
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy
 * of this software and associated documentation files (the "Software"), to deal
@@ -26,13 +27,12 @@
 */
 
 
-
-
-#ifndef SOLIDUTILS_INCLUDE_ARRAY_HPP
-#define SOLIDUTILS_INCLUDE_ARRAY_HPP
+#ifndef SOLIDUTILS_INCLUDE_CONSTARRAY_HPP
+#define SOLIDUTILS_INCLUDE_CONSTARRAY_HPP
 
 
 #include "Debug.hpp"
+#include "Array.hpp"
 
 #include <memory>
 
@@ -41,78 +41,84 @@ namespace sl
 {
 
 /**
-* @brief The Array class provides functionality similar to std::vector, except
-* that it does not construct or destruct elements, and does not allow
-* insertions or append. This is for performance reasons when initialization
+* @brief The ConstArray class provides functionality similar to std::vector,
+* except that it does not construct or destruct elements, does not allow
+* insertions or appending, and can use memory it does not own for storage.
+* This is for performance reasons when initialization
 * is not required. However, this makes it unsuitable for anything other than
 * primitive datatypes or other structures movemable with a simple memcpy().
 *
 * @tparam T The type of element.
 */
 template<typename T>
-class Array
+class ConstArray
 {
   public:
     /**
-    * @brief Create a new mutable array.
+    * @brief Create a new mutable array with a default value for each element.
     *
     * @param size The size of the array.
     */
-    Array(
-        size_t const size) :
-      m_size(size),
-      m_data(new T[size])
+    ConstArray(
+        Array<T> array) :
+      m_size(array.size()), // must come before call to steal()
+      m_data(array.steal()),
+      m_isOwner(true)
     {
       // do nothing
     }
 
 
     /**
-    * @brief Create a new mutable array with a default value for each element.
+    * @brief Create a new non-owning array. If the pointer is null, then
+    * size must 0.
     *
-    * @param size The size of the array.
+    * @param ptr The pointer.
+    * @param size The number of elements in the array.
     */
-    Array(
-        size_t const size,
-        T const value) :
-      Array(size)
+    ConstArray(
+        T const * const ptr,
+        size_t const size) :
+      m_size(size),
+      m_data(ptr),
+      m_isOwner(false)
     {
-      std::fill(m_data.get(), m_data.get()+m_size, value);
+      ASSERT_TRUE(ptr != nullptr || size == 0);
     }
 
 
     /**
     * @brief Move constructor.
     *
-    * @param lhs The array to move.
+    * @param rhs The array to move.
     */
-    Array(
-        Array && lhs) noexcept :
-      m_size(lhs.m_size),
-      m_data(std::move(lhs.m_data))
+    ConstArray(
+        ConstArray && rhs) noexcept :
+      m_size(rhs.m_size),
+      m_data(std::move(rhs.m_data))
     {
-      lhs.m_size = 0;
+      rhs.m_size = 0;
     }
 
 
     /**
     * @brief Deleted copy-assignment operator.
     *
-    * @param rhs The Array to copy.
+    * @param rhs The ConstArray to copy.
     */
-    Array(
-        Array const & rhs) = delete;
+    ConstArray(
+        ConstArray const & rhs) = delete;
 
 
     /**
     * @brief Deleted assignment operator.
     *
-    * @param lhs The Array to copy.
+    * @param lhs The ConstArray to copy.
     *
     * @return This array.
     */
-    Array & operator=(
-        Array const & rhs) = delete;
+    ConstArray & operator=(
+        ConstArray const & rhs) = delete;
 
 
     /**
@@ -122,8 +128,8 @@ class Array
     *
     * @return This array.
     */
-    Array & operator=(
-        Array && lhs)
+    ConstArray & operator=(
+        ConstArray && lhs)
     {
       m_size = lhs.m_size;
       m_data = std::move(lhs.m_data);
@@ -133,33 +139,15 @@ class Array
       return *this;
     }
 
-
     /**
-    * @brief Set all entries in the array to the given value.
-    *
-    * @param val The value to set.
+    * @brief Destructor.
     */
-    void set(
-        T const val) noexcept
+    ~ConstArray()
     {
-      for (size_t i = 0; i < m_size; ++i) {
-        m_data[i] = val;
+      if (!m_isOwner) {
+        // disown the unique pointer before this object is destroyed.
+        m_data.release();
       }
-    }
-
-
-    /**
-    * @brief Get the element at the given index.
-    *
-    * @param index The index of the element.
-    *
-    * @return A reference to the element.
-    */
-    T & operator[](
-        size_t const index) noexcept
-    {
-      ASSERT_LESS(index, m_size);
-      return m_data[index];
     }
 
 
@@ -175,17 +163,6 @@ class Array
     {
       ASSERT_LESS(index, m_size);
       return m_data[index];
-    }
-
-
-    /**
-    * @brief Get the underlying memory.
-    *
-    * @return The underlying memory.
-    */
-    T * data() noexcept
-    {
-      return m_data.get();
     }
 
 
@@ -234,42 +211,11 @@ class Array
 
 
     /**
-    * @brief Get the beginning iterator (mutable).
-    *
-    * @return The iterator/pointer.
-    */
-    T * begin() noexcept
-    {
-      return m_data.get();
-    }
-
-
-    /**
-    * @brief Get the end iterator (mutable).
-    *
-    * @return The iterator/pointer.
-    */
-    T * end() noexcept
-    {
-      return m_data.get() + m_size;
-    }
-
-    /**
     * @brief Get the front of the array.
     *
     * @return The first element.
     */
     T const & front() const noexcept
-    {
-      return (*this)[0];
-    }
-
-    /**
-    * @brief Get the front of the array.
-    *
-    * @return The first element.
-    */
-    T & front() noexcept
     {
       return (*this)[0];
     }
@@ -284,30 +230,10 @@ class Array
       return (*this)[m_size-1];
     }
 
-    /**
-    * @brief Get the back of the array.
-    *
-    * @return The last element.
-    */
-    T & back() noexcept
-    {
-      return (*this)[m_size-1];
-    }
-
-    /**
-    * @brief Pull out the heap memory from this Array, leaving it empty.
-    *
-    * @return The unique pointer to the heap memory.
-    */
-    std::unique_ptr<T[]> steal() noexcept
-    {
-      m_size = 0;
-      return std::unique_ptr<T[]>(std::move(m_data));
-    }
-
   private:
     size_t m_size;
-    std::unique_ptr<T[]> m_data;
+    std::unique_ptr<T const []> m_data;
+    bool m_isOwner;
 
 };
 

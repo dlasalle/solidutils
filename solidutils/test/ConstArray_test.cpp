@@ -1,10 +1,10 @@
 /**
-* @file Array_test.cpp
-* @brief Unit tests for the Array class.
+* @file ConstArray_test.cpp
+* @brief Unit tests for the ConstArray class.
 * @author Dominique LaSalle <dominique@solidlake.com>
-* Copyright 2017-2018, Solid Lake LLC
+* Copyright 2018, Solid Lake LLC
 * @version 1
-* @date 2017-10-06
+* @date 2018-11-14
 *
 * Permission is hereby granted, free of charge, to any person obtaining a copy
 * of this software and associated documentation files (the "Software"), to deal
@@ -29,71 +29,68 @@
 
 
 #include "UnitTest.hpp"
+#include "ConstArray.hpp"
 #include "Array.hpp"
 
 #include <cstdlib>
+#include <vector>
 
 
 namespace sl
 {
 
 
-UNITTEST(Array, Size)
+UNITTEST(ConstArray, Size)
 {
-  Array<int> m(1001UL);
+  ConstArray<int> m(1001UL);
   testEqual(m.size(), 1001UL);
 }
 
-
-UNITTEST(Array, Set)
+UNITTEST(ConstArray, FromArray)
 {
-  Array<int> m(5UL);
-  m.set(3);
+  ConstArray<int> m(Array<int>(5, 1));
+  testEqual(m.size(), 5UL);
 
-  for (size_t i = 0; i < m.size(); ++i) {
-    testEqual(m[i], 3);
+  for (int const v : m) {
+    testEqual(v, 1);
   }
 }
 
-
-UNITTEST(Array, Empty)
+UNITTEST(ConstArray, FromExternalMemory)
 {
-  Array<size_t> m(0UL);
-  testEqual(m.size(), 0UL);
+  std::vector<int> a(5, 1);
+  {
+    // make sure the const array is free'd before vector
+    ConstArray<int> m(a.data(), a.size());
+    testEqual(m.size(), 5UL);
 
-  m.set(10);
+    for (int const v : m) {
+      testEqual(v, 1);
+    }
+  }
 }
 
-
-UNITTEST(Array, Front)
+UNITTEST(ConstArray, Front)
 {
-  Array<size_t> m(10UL);
-  for (size_t i = 0; i < m.size(); ++i) {
-    m[i] = i;
+  Array<size_t> a(10UL);
+  for (size_t i = 0; i < a.size(); ++i) {
+    a[i] = i;
   }
+  ConstArray<size_t> m(std::move(a));
 
   testEqual(m.front(), 0UL);
-
-  m.front() = 5UL;
-
-  testEqual(m.front(), 5UL);
-  testEqual(m[0], 5UL);
 }
 
 
-UNITTEST(Array, Back)
+UNITTEST(ConstArray, Back)
 {
-  Array<size_t> m(10UL);
-  for (size_t i = 0; i < m.size(); ++i) {
-    m[i] = i;
+  Array<size_t> a(10UL);
+  for (size_t i = 0; i < a.size(); ++i) {
+    a[i] = i;
   }
+  ConstArray<size_t> m(std::move(a));
 
   testEqual(m.back(), m.size()-1);
-
-  m.back() = 5UL;
-
-  testEqual(m.back(), 5UL);
-  testEqual(m[m.size()-1], 5UL);
 }
 
 
