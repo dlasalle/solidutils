@@ -34,7 +34,6 @@
 
 #include <chrono>
 #include <memory>
-#include "Exception.hpp"
 
 
 namespace sl
@@ -186,7 +185,7 @@ class Timer
     Scope scope()
     {
       if (m_scope.get() != nullptr) {
-        throw InvalidStateException(
+        throw std::runtime_error(
             "Cannot start scope for already running timer.");
       }
 
@@ -199,7 +198,7 @@ class Timer
     void start()
     {
       if (m_scope.get() != nullptr) {
-        throw InvalidStateException("Cannot start already running timer.");
+        throw std::runtime_error("Cannot start already running timer.");
       }
 
       m_scope.reset(new Scope(this));
@@ -211,7 +210,7 @@ class Timer
     void stop()
     {
       if (m_scope.get() == nullptr) {
-        throw InvalidStateException("Cannot stop non-running timer.");
+        throw std::runtime_error("Cannot stop non-running timer.");
       }
 
       // destroy scope (adding durationg).
@@ -226,7 +225,7 @@ class Timer
     double poll() const
     {
       if (m_scope.get() != nullptr) {
-        throw InvalidStateException("Cannot poll running timer.");
+        throw std::runtime_error("Cannot poll running timer.");
       }
 
       return m_duration;
