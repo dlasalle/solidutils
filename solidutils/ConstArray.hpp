@@ -95,7 +95,8 @@ class ConstArray
     ConstArray(
         ConstArray && rhs) noexcept :
       m_size(rhs.m_size),
-      m_data(std::move(rhs.m_data))
+      m_data(std::move(rhs.m_data)),
+      m_isOwner(rhs.m_isOwner)
     {
       rhs.m_size = 0;
     }
