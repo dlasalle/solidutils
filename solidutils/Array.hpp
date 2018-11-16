@@ -254,6 +254,7 @@ class Array
       return m_data.get() + m_size;
     }
 
+
     /**
     * @brief Get the front of the array.
     *
@@ -263,6 +264,7 @@ class Array
     {
       return (*this)[0];
     }
+
 
     /**
     * @brief Get the front of the array.
@@ -274,6 +276,7 @@ class Array
       return (*this)[0];
     }
 
+
     /**
     * @brief Get the back of the array.
     *
@@ -283,6 +286,7 @@ class Array
     {
       return (*this)[m_size-1];
     }
+
 
     /**
     * @brief Get the back of the array.
@@ -294,6 +298,24 @@ class Array
       return (*this)[m_size-1];
     }
 
+
+    /**
+    * @brief Shrink the size of the array. This does not gaurantee the memory
+    * allocation will be decreased, but only that the local size of the array
+    * will shrink. Calling this method with a `smallerSize` greater than the
+    * size of the array will have no effect.
+    *
+    * @param smallerSize The size to shrink the array to.
+    */
+    void shrink(
+        size_t smallerSize)
+    {
+      if (smallerSize < m_size) {
+        m_size = smallerSize;
+      }
+    }
+
+
     /**
     * @brief Pull out the heap memory from this Array, leaving it empty.
     *
@@ -304,6 +326,7 @@ class Array
       m_size = 0;
       return std::unique_ptr<T[]>(std::move(m_data));
     }
+
 
   private:
     size_t m_size;
