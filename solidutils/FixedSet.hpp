@@ -72,7 +72,7 @@ class FixedSet
     *
     * @param element The element.
     *
-    * @return The element.
+    * @return True if the element is in the set.
     */
     bool has(
         T const element) const noexcept
