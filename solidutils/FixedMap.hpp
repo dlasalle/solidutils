@@ -1,10 +1,10 @@
 /**
- * @file FixedSet.hpp
- * @brief The FixedSet class.
+ * @file FixedMap.hpp
+ * @brief The FixedMap class.
  * @author Dominique LaSalle <dominique@solidlake.com>
- * Copyright 2017-2018, Solid Lake LLC
+ * Copyright 2018
  * @version 1
- * @date 2017-10-19
+ * @date 2018-12-05
  *
  * Permission is hereby granted, free of charge, to any person obtaining a copy
  * of this software and associated documentation files (the "Software"), to
@@ -26,41 +26,42 @@
  */
 
 
-
-#ifndef SOLIDUTILS_INCLUDE_FIXEDSET_HPP
-#define SOLIDUTILS_INCLUDE_FIXEDSET_HPP
+#ifndef SOLIDUTILS_INCLUDE_FIXEDMAP_HPP
+#define SOLIDUTILS_INCLUDE_FIXEDMAP_HPP
 
 
 #include "Array.hpp"
-
+#include "ConstArray.hpp"
 
 namespace sl
 {
 
-
 /**
-* @brief The FixedSet class provides a set implementation which allows for
+* @brief The FixedMap class provides a map implementation which allows for
 * insertion, querying, and deletion in constant time. While std::unordered_set
 * may give constant time complexity of these operations through a hash table,
-* this does so through fixed size dense vector (no hashing).
+* this does so through fixed size dense vector (no hashing), and store the data
+* in a contiguous chunk of memory.
 *
-* @tparam T The type of element to store.
+* @tparam K The key type, must an integer.
+* @tparam V The value type, must be trivial.
 */
-template <typename T>
-class FixedSet
+template <typename K, typename V>
+class FixedMap
 {
   public:
-    static constexpr T const NULL_INDEX = static_cast<T>(-1);
+    static constexpr K const NULL_INDEX = static_cast<K>(-1);
 
     /**
     * @brief Create a new empty fixed set.
     *
     * @param size The size of the set.
     */
-    FixedSet(
+    FixedMap(
         size_t const size) :
       m_size(0),
-      m_data(size),
+      m_keys(size),
+      m_values(size),
       m_index(size, NULL_INDEX)
     {
       // do nothing
@@ -68,36 +69,58 @@ class FixedSet
 
 
     /**
-    * @brief Check if an element exists in this set.
+    * @brief Check if an key exists in this set.
     *
-    * @param element The element.
+    * @param key The key.
     *
-    * @return True if the element is in the set.
+    * @return True if the key is in the map.
     */
     bool has(
-        T const element) const noexcept
+        K const key) const noexcept
     {
-      size_t const index = static_cast<size_t>(element);
+      size_t const index = static_cast<size_t>(key);
 
       ASSERT_LESS(index, m_index.size());
 
       return m_index[index] != NULL_INDEX;
     }
 
+
     /**
-    * @brief Add an element to this set.
+    * @brief Get the value associated with a given key.
     *
-    * @param element The element to add.
+    * @param key The key.
+    *
+    * @return The value.
+    */
+    V get(
+        K const key) const noexcept
+    {
+      size_t const index = static_cast<size_t>(key);
+
+      ASSERT_LESS(index, m_index.size());
+
+      return m_values[m_index[index]];
+    }
+
+    /**
+    * @brief Add an key-value pair to this set.
+    *
+    * @param key The key.
+    * @param value The value.
     */
     void add(
-        T const element) noexcept
+        K const key,
+        V const value) noexcept
     {
-      size_t const index = static_cast<size_t>(element);
+      size_t const index = static_cast<size_t>(key);
 
       ASSERT_LESS(index, m_index.size());
       ASSERT_EQUAL(m_index[index], NULL_INDEX);
 
-      m_data[m_size] = element;
+      m_keys[m_size] = key;
+      m_values[m_size] = value;
+
       m_index[index] = m_size;
 
       ++m_size;
@@ -105,46 +128,26 @@ class FixedSet
 
 
     /**
-    * @brief Remove an element from this set.
+    * @brief Remove an key-value pair from this set.
     *
-    * @param element The element to remove.
+    * @param key The key to remove.
     */
     void remove(
-        T const element) noexcept
+        K const key) noexcept
     {
-      size_t const index = static_cast<size_t>(element);
+      size_t const index = static_cast<size_t>(key);
 
       ASSERT_LESS(index, m_index.size());
       ASSERT_NOTEQUAL(m_index[index], NULL_INDEX);
 
       --m_size;
-      T const swap = m_data[m_size];
+      K const swapKey = m_keys[m_size];
+      V const swapValue = m_values[m_size];
       size_t const place = m_index[index];
-      m_data[place] = swap;
-      m_index[swap] = place;
+      m_keys[place] = swapKey;
+      m_values[place] = swapValue;
+      m_index[static_cast<size_t>(swapKey)] = place;
       m_index[index] = NULL_INDEX;
-    }
-
-
-    /**
-    * @brief Get the underlying array.
-    *
-    * @return The data.
-    */
-    T * data() noexcept
-    {
-      return m_data.data();
-    }
-
-
-    /**
-    * @brief Get the underlying array.
-    *
-    * @return The data.
-    */
-    T const * data() const noexcept
-    {
-      return m_data.data();
     }
 
 
@@ -160,57 +163,34 @@ class FixedSet
 
 
     /**
-    * @brief Get the beginning iterator.
+    * @brief Get the keys in this map.
     *
-    * @return The iterator/pointer.
+    * @return The keys.
     */
-    T const * begin() const noexcept
+    ConstArray<K> keys() const noexcept
     {
-      return m_data.begin();
+      return ConstArray<K>(m_keys.data(), m_size);
     }
 
-
     /**
-    * @brief Get the end iterator.
+    * @brief Get the values in this map.
     *
-    * @return The iterator/pointer.
+    * @return The values.
     */
-    T const * end() const noexcept
+    ConstArray<V> values() const noexcept
     {
-      // we want to return the set's size, and not the array's.
-      return m_data.begin() + m_size;
-    }
-
-
-    /**
-    * @brief Get the beginning iterator (mutable).
-    *
-    * @return The iterator/pointer.
-    */
-    T * begin() noexcept
-    {
-      return m_data.begin();
-    }
-
-
-    /**
-    * @brief Get the end iterator (mutable).
-    *
-    * @return The iterator/pointer.
-    */
-    T * end() noexcept
-    {
-      // we want to return the set's size, and not the array's.
-      return m_data.begin() + m_size;
+      return ConstArray<V>(m_values.data(), m_size);
     }
 
 
   private:
     size_t m_size;
-    Array<T> m_data;
-    Array<T> m_index;
+    Array<K> m_keys;
+    Array<V> m_values;
+    Array<K> m_index;
 };
 
 }
+
 
 #endif

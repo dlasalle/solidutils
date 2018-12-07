@@ -28,8 +28,9 @@
 
 
 
-#include "UnitTest.hpp"
 #include "FixedSet.hpp"
+#include "UnitTest.hpp"
+
 #include <vector>
 #include <algorithm>
 
