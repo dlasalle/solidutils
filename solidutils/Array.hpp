@@ -53,6 +53,9 @@ template<typename T>
 class Array
 {
   public:
+    using iterator = T *;
+    using const_iterator = T const *;
+
     /**
     * @brief Create a new mutable array.
     *
@@ -216,7 +219,7 @@ class Array
     *
     * @return The iterator/pointer.
     */
-    T const * begin() const noexcept
+    const_iterator begin() const noexcept
     {
       return m_data.get();
     }
@@ -227,7 +230,7 @@ class Array
     *
     * @return The iterator/pointer.
     */
-    T const * end() const noexcept
+    const_iterator end() const noexcept
     {
       return m_data.get() + m_size;
     }
@@ -238,7 +241,7 @@ class Array
     *
     * @return The iterator/pointer.
     */
-    T * begin() noexcept
+    iterator begin() noexcept
     {
       return m_data.get();
     }
@@ -249,7 +252,7 @@ class Array
     *
     * @return The iterator/pointer.
     */
-    T * end() noexcept
+    iterator end() noexcept
     {
       return m_data.get() + m_size;
     }
