@@ -34,6 +34,7 @@
 
 #include <chrono>
 #include <memory>
+#include <stdexcept>
 
 
 namespace sl
@@ -88,7 +89,8 @@ class Timer
     {
       std::chrono::high_resolution_clock::time_point time =
           std::chrono::high_resolution_clock::now();
-			size_t const ticks = time.time_since_epoch().count();
+			size_t const ticks = \
+          static_cast<size_t>(time.time_since_epoch().count());
 			double constexpr SECONDS_PER_TICK = \
 					static_cast<double>(std::chrono::system_clock::period::num) / \
 					static_cast<double>(std::chrono::system_clock::period::den);

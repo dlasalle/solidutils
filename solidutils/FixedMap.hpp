@@ -163,12 +163,24 @@ class FixedMap
 
 
     /**
+    * @brief Get the maximum size of this map.
+    *
+    * @return The maximum size.
+    */
+    size_t maxSize() const noexcept
+    {
+      return m_keys.size();
+    }
+
+
+    /**
     * @brief Get the keys in this map.
     *
     * @return The keys.
     */
     ConstArray<K> keys() const noexcept
     {
+      ASSERT_LESS(m_size, m_keys.size());
       return ConstArray<K>(m_keys.data(), m_size);
     }
 
@@ -179,6 +191,7 @@ class FixedMap
     */
     ConstArray<V> values() const noexcept
     {
+      ASSERT_LESS(m_size, m_values.size());
       return ConstArray<V>(m_values.data(), m_size);
     }
 

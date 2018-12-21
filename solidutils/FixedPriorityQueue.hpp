@@ -265,7 +265,7 @@ class FixedPriorityQueue
       ASSERT_NOTEQUAL(m_index[value], NULL_INDEX);
 
       size_t const index = m_index[value];
-      V const key = m_data[index].key + delta;
+      K const key = m_data[index].key + delta;
 
       update(key, value);
     }

@@ -146,7 +146,7 @@ UNITTEST(FixedMap, Keys)
   map.add(2, 2.0);
   map.add(5, 0.0);
 
-  std::vector<bool> mask(map.size(), false);
+  std::vector<bool> mask(map.maxSize(), false);
 
   testEqual(map.keys().size(), 3ULL);
   for (int const key : map.keys()) {
@@ -154,8 +154,15 @@ UNITTEST(FixedMap, Keys)
   }
 
   testTrue(mask[0]);
+  testFalse(mask[1]);
   testTrue(mask[2]);
+  testFalse(mask[3]);
+  testFalse(mask[4]);
   testTrue(mask[5]);
+  testFalse(mask[6]);
+  testFalse(mask[7]);
+  testFalse(mask[8]);
+  testFalse(mask[9]);
 }
 
 
