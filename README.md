@@ -5,6 +5,10 @@ SolidUtils
 <img src="https://travis-ci.org/solidlake/solidutils.svg?branch=master"/>
 </a>
 
+<a href="https://ci.appveyor.com/project/dlasalle/solidutils">
+  <img src="https://ci.appveyor.com/api/projects/status/n1k33omwju8r0ynb?svg=true"/>
+</a>
+
 <a href='http://solidutils.readthedocs.io/en/latest/?badge=latest'>
 <img src='https://readthedocs.org/projects/solidutils/badge/?version=latest' alt='Documentation Status' />
 </a>
