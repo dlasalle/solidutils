@@ -50,9 +50,6 @@ UNITTEST(Timer, StartStop)
   double duration = timer.poll();
 
   testGreater(duration, 0.01);
-
-  // allow for a lot of buffer in case unit test server is under heavy load
-  testLess(duration, 1.0);
 }
 
 UNITTEST(Timer, Scope)
@@ -68,9 +65,6 @@ UNITTEST(Timer, Scope)
   double duration = timer.poll();
 
   testGreater(duration, 0.01);
-
-  // allow for a lot of buffer in case unit test server is under heavy load
-  testLess(duration, 1.0);
 }
 
 UNITTEST(Timer, Add)
