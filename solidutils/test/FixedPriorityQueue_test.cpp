@@ -81,7 +81,7 @@ UNITTEST(FixedPriortyQueue, AddContains)
 
   for (int i = 0; i < 10; ++i) {
     if (i % 3 == 0) {
-      pq.add(1.0/(i+1), i);
+      pq.add(1.0f/(i+1), i);
     }
   }
 
@@ -106,7 +106,7 @@ UNITTEST(FixedPriortyQueue, AddUpdate)
 
   for (int i = 0; i < 10; ++i) {
     if (i % 3 == 0) {
-      pq.update(i, i);
+      pq.update(static_cast<float>(i), i);
     }
   }
 
@@ -138,12 +138,12 @@ UNITTEST(FixedPriortyQueue, UpdateByDelta)
   FixedPriorityQueue<float, int> pq(10);
 
   for (int i = 0; i < 10; ++i) {
-    pq.add(-i, i);
+    pq.add(static_cast<float>(-i), i);
   }
 
   for (int i = 0; i < 10; ++i) {
     if (i % 3 == 0) {
-      pq.updateByDelta(2*i, i);
+      pq.updateByDelta(static_cast<float>(2*i), i);
     }
   }
 
@@ -235,7 +235,7 @@ UNITTEST(FixedPriortyQueue, Clear)
 
   // test that we can re-use the priorty queue again
   for (int i = 0; i < 10; ++i) {
-    pq.add(i/10.0, i);
+    pq.add(i/10.0f, i);
   }
 
   for (int i = 10; i > 0;) {
