@@ -41,7 +41,7 @@ UNITTEST(FixedPriortyQueue, AddPopInOrder)
   FixedPriorityQueue<float, int> pq(10);
 
   for (int i = 0; i < 10; ++i) {
-    pq.add(1.0/(i+1), i);
+    pq.add(1.0f/(i+1), i);
   }
 
   for (int i = 0; i < 10; ++i) {
@@ -56,7 +56,7 @@ UNITTEST(FixedPriortyQueue, AddPeek)
   FixedPriorityQueue<float, int> pq(10);
 
   for (int i = 0; i < 10; ++i) {
-    pq.add(1.0/(i+1), i);
+    pq.add(1.0f/(i+1), i);
   }
 
   testEqual(pq.peek(), 0);
@@ -68,7 +68,7 @@ UNITTEST(FixedPriortyQueue, AddMax)
   FixedPriorityQueue<float, int> pq(10);
 
   for (int i = 0; i < 10; ++i) {
-    pq.add(1.0/(i+1), i);
+    pq.add(1.0f/(i+1), i);
   }
 
   testEqual(pq.max(), 1.0);
@@ -101,7 +101,7 @@ UNITTEST(FixedPriortyQueue, AddUpdate)
   FixedPriorityQueue<float, int> pq(10);
 
   for (int i = 0; i < 10; ++i) {
-    pq.add(1.0/(i+1), i);
+    pq.add(1.0f/(i+1), i);
   }
 
   for (int i = 0; i < 10; ++i) {
@@ -178,7 +178,7 @@ UNITTEST(FixedPriortyQueue, AddPopReverseOrder)
   FixedPriorityQueue<float, int> pq(10);
 
   for (int i = 0; i < 10; ++i) {
-    pq.add(i/10.0, i);
+    pq.add(i/10.0f, i);
   }
 
   for (int i = 10; i > 0;) {
@@ -194,7 +194,7 @@ UNITTEST(FixedPriortyQueue, AddRemoveContains)
   FixedPriorityQueue<float, int> pq(10);
 
   for (int i = 0; i < 10; ++i) {
-    pq.add(1.0/(i+1), i);
+    pq.add(1.0f/(i+1), i);
   }
 
   for (int i = 0; i < 10; ++i) {
@@ -218,7 +218,7 @@ UNITTEST(FixedPriortyQueue, Clear)
   FixedPriorityQueue<float, int> pq(10);
 
   for (int i = 0; i < 10; ++i) {
-    pq.add(1.0/(i+1), i);
+    pq.add(1.0f/(i+1), i);
   }
 
   // remove a couple
@@ -251,7 +251,7 @@ UNITTEST(FixedPriorityQueue, RemainingAll)
   FixedPriorityQueue<float, int> pq(10);
 
   for (int i = 0; i < 10; ++i) {
-    pq.add(1.0/(i+1), i);
+    pq.add(1.0f/(i+1), i);
   }
 
   size_t count = 0;
@@ -268,7 +268,7 @@ UNITTEST(FixedPriorityQueue, RemainingHalf)
   FixedPriorityQueue<float, int> pq(10);
 
   for (int i = 0; i < 7; ++i) {
-    pq.add(1.0/(i+1), i);
+    pq.add(1.0f/(i+1), i);
   }
 
   pq.pop();

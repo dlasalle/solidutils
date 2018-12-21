@@ -255,7 +255,7 @@ bool UnitTest(
     std::cerr << "Test " << name << " PASSED." << std::endl;
     ++_unittest_numberPassed;
     return true;
-  } catch (TestFailed const & e) {
+  } catch (TestFailed const &) {
     std::cerr << "Test " << name << " FAILED." << std::endl;
     ++_unittest_numberFailed;
     return false;
