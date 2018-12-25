@@ -57,6 +57,18 @@ class Array
     using const_iterator = T const *;
 
     /**
+    * @brief Default constructor, creating an empty array. This is only useful
+    * for reserve stack space in order to re-assign.
+    */
+    Array() :
+      m_size(0),
+      m_data(nullptr)
+    {
+      // do nothing
+    }
+
+
+    /**
     * @brief Create a new mutable array.
     *
     * @param size The size of the array.

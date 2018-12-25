@@ -37,6 +37,12 @@
 namespace sl
 {
 
+UNITTEST(Array, DefaultConstructor)
+{
+  Array<int> m;
+  testEqual(m.size(), 0UL);
+}
+
 
 UNITTEST(Array, Size)
 {
