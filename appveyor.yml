@@ -7,6 +7,13 @@ environment:
   - VS_VERSION: 14
     VS_PLATFORM: x64
 
+branches:
+  only:
+    - master
+
+skip_branch_with_pr: true
+
+
 
 before_build:
   - md build-release
