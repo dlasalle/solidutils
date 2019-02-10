@@ -69,16 +69,16 @@ class FastIntDistribution
   * @return A number in the range of [min, max].
   */
   template<class RNG>
-  T operator()(RNG&& rng)
+  T operator()(RNG& rng)
   {
-    constexpr auto RNG_RANGE = rng.max() - rng.min() + 1;
+    constexpr auto RNG_RANGE = RNG::max() - RNG::min() + 1;
 
     size_t const width = m_range / RNG_RANGE;
 
     uint64_t num = 0;
     for (size_t i = 0; i <= width; ++i) {
       num *= static_cast<uint64_t>(RNG_RANGE);
-      num += static_cast<uint64_t>(rng() - rng.min());
+      num += static_cast<uint64_t>(rng() - RNG::min());
     }
     num = num % m_range;
     
