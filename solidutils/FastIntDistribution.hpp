@@ -84,7 +84,7 @@ class FastIntDistribution
     uint64_t const width = m_range / RNG_RANGE;
 
     uint64_t num = 0;
-    for (size_t i = 0; i <= width; ++i) {
+    for (uint64_t i = 0; i <= width; ++i) {
       num *= static_cast<uint64_t>(RNG_RANGE);
       num += static_cast<uint64_t>(rng() - RNG::min());
     }
