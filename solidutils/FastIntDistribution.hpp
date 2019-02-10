@@ -43,6 +43,13 @@ template<typename T>
 class FastIntDistribution
 {
   public:
+  /**
+  * @brief Create a new FastIntDistribution which will result in numbers
+  * [min,max].
+  *
+  * @param min The minimum number.
+  * @param max The maximum number.
+  */
   FastIntDistribution(
       T const min,
       T const max) :
@@ -52,6 +59,15 @@ class FastIntDistribution
     // do nothing
   }
 
+  /**
+  * @brief Generate a number in the range of [min, max]. The distribution may
+  * not be uniform, particularily for larger ranges.
+  *
+  * @tparam RNG The random engine type.
+  * @param rng The random engine.
+  *
+  * @return A number in the range of [min, max].
+  */
   template<class RNG>
   T operator()(RNG&& rng)
   {
