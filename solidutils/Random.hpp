@@ -31,6 +31,7 @@
 
 
 #include "Debug.hpp"
+#include "FastIntDistribution.hpp"
 
 #include <cstddef>
 #include <algorithm>
@@ -151,8 +152,8 @@ class Random
         // for small arrays, resort to std::shuffle
         std::shuffle(data, data+num, rng);
       } else {
-        std::uniform_int_distribution<size_t> indexDist(0, num-swapSize);
-        std::uniform_int_distribution<int> swapDist(0, 4);
+        FastIntDistribution<size_t> indexDist(0, num-swapSize);
+        FastIntDistribution<int> swapDist(0, 4);
 
         // The below swapping is originally based on the algorithm used in
         // `randArrayPermute()` function in George Karypis's GKLib.
