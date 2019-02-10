@@ -30,6 +30,10 @@
 #define SOLIDUTILS_INCLUDE_FASTINTDISTRIBUTION_HPP
 
 
+#include <cstdint>
+#include <limits>
+
+
 namespace sl
 {
 
@@ -54,7 +58,7 @@ class FastIntDistribution
       T const min,
       T const max) :
     m_min(min),
-    m_range(max-min+1)
+    m_range(static_cast<uint64_t>(max-min)+1)
   {
     // do nothing
   }
@@ -71,9 +75,13 @@ class FastIntDistribution
   template<class RNG>
   T operator()(RNG& rng)
   {
-    constexpr auto RNG_RANGE = RNG::max() - RNG::min() + 1;
+    static_assert(std::numeric_limits<uint64_t>::max() > \
+        static_cast<uint64_t>(RNG::max() - RNG::min()), \
+        "Unhandled full 64 bit range.");
 
-    size_t const width = m_range / RNG_RANGE;
+    constexpr uint64_t RNG_RANGE = static_cast<uint64_t>(RNG::max() - RNG::min()) + 1;
+
+    uint64_t const width = m_range / RNG_RANGE;
 
     uint64_t num = 0;
     for (size_t i = 0; i <= width; ++i) {
@@ -87,7 +95,7 @@ class FastIntDistribution
 
   private:
   T m_min;
-  T m_range;
+  uint64_t m_range;
 
 };
 
