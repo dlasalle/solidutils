@@ -55,7 +55,19 @@ class ConstArray
 {
   public:
     /**
-    * @brief Create a new mutable array with a default value for each element.
+    * @brief Create an empty non mutable array.
+    */
+    ConstArray() :
+      m_size(0),
+      m_data(nullptr),
+      m_isOwner(true)
+    {
+      // do nothing
+    }
+
+    /**
+    * @brief Create a new non-mutable array with a default
+    * value for each element.
     *
     * @param size The size of the array.
     */
@@ -84,6 +96,22 @@ class ConstArray
       m_isOwner(false)
     {
       ASSERT_TRUE(ptr != nullptr || size == 0);
+    }
+
+    /**
+    * @brief Create a new constant array.
+    *
+    * @param ptr The data to move into the array.
+    * @param size The size of the array.
+    */
+    ConstArray(
+        std::unique_ptr<T[]>&& ptr,
+        size_t const size) :
+      m_size(size),
+      m_data(std::move(ptr)),
+      m_isOwner(true)
+    {
+      // do nothing
     }
 
 
@@ -230,6 +258,16 @@ class ConstArray
     {
       return (*this)[m_size-1];
     }
+
+    /**
+    * @brief Free the memory associated with this array. 
+    */
+    void clear()
+    {
+      m_size = 0;
+      m_data.reset();
+    }
+
 
   private:
     size_t m_size;

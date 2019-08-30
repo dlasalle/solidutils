@@ -342,6 +342,15 @@ class Array
       return std::unique_ptr<T[]>(std::move(m_data));
     }
 
+    /**
+    * @brief Free the memory associated with this array. 
+    */
+    void clear()
+    {
+      m_size = 0;
+      m_data.reset();
+    }
+
 
   private:
     size_t m_size;
