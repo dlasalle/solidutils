@@ -343,6 +343,16 @@ class Array
     }
 
 
+    /**
+    * @brief Free the memory associated with this array.
+    */
+    void clear()
+    {
+      m_size = 0;
+      m_data.reset();
+    }
+
+
   private:
     size_t m_size;
     std::unique_ptr<T[]> m_data;
