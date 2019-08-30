@@ -260,7 +260,7 @@ class ConstArray
     }
 
     /**
-    * @brief Free the memory associated with this array. 
+    * @brief Free the memory associated with this array.
     */
     void clear()
     {

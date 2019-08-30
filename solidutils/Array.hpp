@@ -342,8 +342,9 @@ class Array
       return std::unique_ptr<T[]>(std::move(m_data));
     }
 
+
     /**
-    * @brief Free the memory associated with this array. 
+    * @brief Free the memory associated with this array.
     */
     void clear()
     {
