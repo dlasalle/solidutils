@@ -69,14 +69,15 @@ class Array
 
 
     /**
-    * @brief Create a new mutable array.
+    * @brief Create a new mutable array. If the size is 0, no allocation takes
+    * place and a nullptr is assigned for data.
     *
     * @param size The size of the array.
     */
     Array(
         size_t const size) :
       m_size(size),
-      m_data(new T[size])
+      m_data(size > 0 ? new T[size] : nullptr)
     {
       // do nothing
     }
@@ -144,6 +145,7 @@ class Array
       m_data = std::move(lhs.m_data);
 
       lhs.m_size = 0;
+      lhs.m_data = nullptr;
 
       return *this;
     }
